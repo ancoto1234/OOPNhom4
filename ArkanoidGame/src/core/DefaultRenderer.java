@@ -5,6 +5,8 @@ import javax.swing.*;
 
 public class DefaultRenderer extends JFrame implements Renderer {
     private JPanel gamePanel;
+    private final int WIDTH = 800;
+    private final int HEIGHT = 600;
 
     public  DefaultRenderer(){
         gamePanel = new JPanel();
@@ -12,7 +14,7 @@ public class DefaultRenderer extends JFrame implements Renderer {
         add(gamePanel);
 
         setTitle("Arkanoid Game");
-        setSize(800, 600);
+        setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setLocationRelativeTo(null);
