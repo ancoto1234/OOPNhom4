@@ -3,7 +3,7 @@ import core.*;
 public class main {
     public static void main(String[] args) {
             
-        Renderer renderer = new DefaultRenderer();
+        DefaultRenderer renderer = new DefaultRenderer();
         renderer.createWindow();
 
     }
