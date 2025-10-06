@@ -1,5 +1,5 @@
 package powerups;
 
-public class ExpandPadllePowerUp {
+public class ExpandPadllePowerUp extends PowerUp {
     
 }
