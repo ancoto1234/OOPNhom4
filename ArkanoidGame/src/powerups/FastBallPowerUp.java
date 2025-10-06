@@ -1,5 +1,5 @@
 package powerups;
 
-public class FastBallPowerUp {
+public class FastBallPowerUp extends PowerUp {
     
 }
