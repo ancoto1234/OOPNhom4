@@ -42,7 +42,7 @@ public class GameManager implements KeyListener, ActionListener{
     }
 
     public void updateGame(){
-
+        String s;
     }
 
     public void HandleInput(KeyEvent e){
