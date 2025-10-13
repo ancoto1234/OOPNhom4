@@ -1,41 +1,30 @@
 package objects;
 
-import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class Paddle extends MoveableObject {
     private final int speed;
 
-    public Paddle(int x, int y, int width, int height, Image image, int speed) {
-        super(x, y, width, height, image, 0, 0);
+    public Paddle(int x, int y, int width, int height, int speed) {
+        super(x, y, width, height);
         this.speed = speed;
     }
 
     public void move_Left() {
         this.x -= speed;
+        if (x < 0) {
+            x = 0;
+        }
 
     }
     public void move_Right () {
         this.x += speed;
-    }
-
-    public void move_KeyBoard(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            move_Left();
-        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT){
-            move_Right();
+        if (x + width > 800) {
+            x = 800 - width;
         }
+        
     }
 
-    @Override
-    public void move() {
-
-    }
-
-    @Override
-    public void update() {
-
-    }
 
     public void appyPowerUp() {
 

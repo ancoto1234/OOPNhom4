@@ -24,4 +24,8 @@ public class DefaultRenderer extends JFrame implements Renderer {
     public void createWindow() {
         setVisible(true);
     }
+
+    public void render() {
+
+    }
 }
