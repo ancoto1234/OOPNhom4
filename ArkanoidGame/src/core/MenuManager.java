@@ -1,8 +1,9 @@
 package core;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 import menu.MenuPanel;
+
 
 public class MenuManager extends JFrame {
 
@@ -19,6 +20,7 @@ public class MenuManager extends JFrame {
         setResizable(false);
 
         cardLayout = new CardLayout();
+        setLayout(cardLayout);
         mainPanel = new JPanel(cardLayout);
 
         menuPanel = new MenuPanel(this);
@@ -30,6 +32,9 @@ public class MenuManager extends JFrame {
         add(mainPanel);
         cardLayout.show(mainPanel, "Menu");
         setVisible(true);
+        pack();
+        
+        
 
         showMenu();
 
@@ -44,5 +49,9 @@ public class MenuManager extends JFrame {
         cardLayout.show(mainPanel, "Game");
         renderer.requestFocusInWindow();
         renderer.startGameLoop();
+    }
+
+    public void exitGame() {
+        System.exit(0);
     }
 }

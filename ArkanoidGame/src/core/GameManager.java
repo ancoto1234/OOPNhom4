@@ -18,6 +18,7 @@ import java.io.File;
 import java.nio.Buffer;
 
 
+
 public class GameManager implements KeyListener, ActionListener{
     private Ball ball;
     private Paddle paddle;
@@ -63,11 +64,14 @@ public class GameManager implements KeyListener, ActionListener{
     public void startGame(){
 
         try {
-
-            paddle = new Paddle(350, 550, 100, 20, 15);
+            int paddleWidth = Renderer.SCREEN_WIDTH / 6;
+            int paddleHeight = Renderer.SCREEN_HEIGHT / 27;
+            int paddleX = (Renderer.SCREEN_WIDTH - paddleWidth) / 2;
+            int paddleY = Renderer.SCREEN_HEIGHT - paddleHeight - 60;
+            paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, 15);
             paddle.setImage(getImage("paddle"));
 
-            ball = new Ball(390, 530, 20, 20, 2, -2, 3);
+            ball = new Ball(390, 530, 50, 50, 2, -2, 3);
             ball.setImage(getImage("ball"));
             
             loadLevel(1);

@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class MenuPanel extends JPanel {
@@ -18,10 +17,10 @@ public class MenuPanel extends JPanel {
         setLayout(new GridBagLayout());
 
         try {
-            backgroundImage = ImageIO.read(new File("ArkanoidGame/assets/menu_background.png"));
-            logoImage = ImageIO.read(new File("ArkanoidGame/assets/logo.png"));
+            // backgroundImage = ImageIO.read(new File("ArkanoidGame/assets/menu_background.png"));
+            // logoImage = ImageIO.read(new File("ArkanoidGame/assets/logo.png"));
             
-            arcadeFont = Font.createFont(Font.TRUETYPE_FONT, new File("ArkanoidGame/assets/ARCADECLASSIC.TTF")).deriveFont(28f);
+            arcadeFont = Font.createFont(Font.TRUETYPE_FONT, new File("ArkanoidGame/assets/font.ttf")).deriveFont(30f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(arcadeFont);
 
@@ -34,7 +33,7 @@ public class MenuPanel extends JPanel {
         gbc.insets = new Insets(15, 15, 15, 15);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 0;
     
 
         JButton startButton = createMenuButton("Start Game", e -> manager.startGame());
@@ -48,24 +47,27 @@ public class MenuPanel extends JPanel {
 
     private JButton createMenuButton(String text, ActionListener action) {
         JButton button = new JButton(text);
+        
         button.setFont(arcadeFont);
-        button.setFocusPainted(false);
         button.setForeground(Color.WHITE);
-        button.setBackground(new Color(0, 0, 0, 150));
-        button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
-        button.setPreferredSize(new Dimension(300, 50));
+
+        button.setFocusPainted(false);
+        button.setContentAreaFilled(false);
+        button.setOpaque(true);
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setBorderPainted(false);
+        
         button.addActionListener(action);
 
         button.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
-                button.setBackground(new Color(255, 255, 255, 50));
                 button.setForeground(Color.BLACK);
+                button.setFont(arcadeFont.deriveFont(34f));
             }
 
             public void mouseExited(MouseEvent e) {
-                button.setBackground(new Color(0, 0, 0, 150));
                 button.setForeground(Color.WHITE);
+                button.setFont(arcadeFont.deriveFont(30f));
             }
         });
 
