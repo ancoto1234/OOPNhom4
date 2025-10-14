@@ -32,6 +32,10 @@ public abstract class GameObject {
         this.image = img;
     }
 
+    public BufferedImage getImage() {
+        return image;
+    }
+
     public Rectangle getBounds() {
         return new Rectangle(x, y, width, height);
     }
