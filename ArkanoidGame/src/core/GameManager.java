@@ -7,13 +7,16 @@ import objects.*;
 import powerups.PowerUp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import level.Level;
+import level.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.nio.Buffer;
+
 
 public class GameManager implements KeyListener, ActionListener{
     private Ball ball;
@@ -26,34 +29,64 @@ public class GameManager implements KeyListener, ActionListener{
     private Level currentLevel;
     private boolean leftPressed, rightPressed = false;
 
+    // Quản lí ảnh
+    private HashMap<String, BufferedImage> images;
+
     public GameManager(){
-        startGame();
+        this.score = 0;
+        this.gameState = "START";
+        
+        if (this.gameState == "START"){
+            loadImages();
+            startGame();
+        }
+    }
+
+    public void loadImages() {
+        images = new HashMap<>();
+        
+        try {
+            images.put("paddle", ImageIO.read(new File("ArkanoidGame/assets/paddle.png")));
+            images.put("ball", ImageIO.read(new File("ArkanoidGame/assets/ball.png")));
+            images.put("brick", ImageIO.read(new File("ArkanoidGame/assets/brick.png")));
+            
+        } catch (Exception e) {
+            System.out.println("Error loading images: " + e.getMessage());
+        }
+
+    }
+
+    public BufferedImage getImage(String key) {
+        return images.get(key);
     }
 
     public void startGame(){
 
         try {
-            BufferedImage paddleImage = ImageIO.read(new File("ArkanoidGame/assets/paddle.png"));
-            BufferedImage ballImage = ImageIO.read(new File("ArkanoidGame/assets/ball.png"));
-            BufferedImage brickImage = ImageIO.read(new File("ArkanoidGame/assets/brick.png"));
-
 
             paddle = new Paddle(350, 550, 100, 20, 15);
-            paddle.setImage(paddleImage);
-            ball = new Ball(390, 530, 20, 20, 2, -2, 3);
-            ball.setImage(ballImage);
-            bricks = new ArrayList<>();
-            for (int i = 0; i < 5; i++) {
-                for (int j = 0; j < 10; j++) {
-                    Brick brick = new Brick(60 + j * 70, 50 + i * 30, 60, 20, 2);
-                    brick.setImage(brickImage);
-                    bricks.add(brick);
-                }
-            }
+            paddle.setImage(getImage("paddle"));
 
+            ball = new Ball(390, 530, 20, 20, 2, -2, 3);
+            ball.setImage(getImage("ball"));
+            
+            loadLevel(1);
         } catch (Exception e) {
-            System.out.println("Error loading paddle image: " + e.getMessage());
+            System.out.println("Error initializing game objects " + e.getMessage());
         }   
+    }
+
+    public void loadLevel(int index) {
+        switch (index) {
+            case 1:
+                currentLevel = new Level1(this);
+                break;
+            default:
+                System.out.println("Level not found!");
+                return;
+        }
+
+        bricks = currentLevel.getBricks();
     }
 
     public void render(Graphics g, Component observer) {
@@ -75,7 +108,6 @@ public class GameManager implements KeyListener, ActionListener{
         }
     }
 
-
     public void updateGame() {
         HandleInput();
         ball.move();
@@ -85,10 +117,10 @@ public class GameManager implements KeyListener, ActionListener{
     }
 
     public void HandleInput(){
-        if (leftPressed){
+        if (leftPressed && !rightPressed){
             paddle.move_Left();
         }
-        if (rightPressed){
+        if (rightPressed && !leftPressed){
             paddle.move_Right();
         }
     }
@@ -124,6 +156,10 @@ public class GameManager implements KeyListener, ActionListener{
                 
             }
         }
+    }
+
+    public boolean allBricksDestroyed() {
+        return bricks.isEmpty();
     }
 
     public void gameOver(){

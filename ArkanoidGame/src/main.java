@@ -1,9 +1,9 @@
-import core.Renderer;
+import core.MenuManager;
 
 public class main {
     public static void main(String[] args) {
             
-        Renderer renderer = new Renderer();
+        new MenuManager();
         
         
 

@@ -11,6 +11,10 @@ public class Brick extends GameObject {
         this.hitPoints = hitPoints;
     }
 
+    public int getHitPoints() {
+        return hitPoints;
+    }
+
     public void takeHits() {
         this.hitPoints -= 1;
     }
@@ -18,4 +22,6 @@ public class Brick extends GameObject {
     public boolean isDestroyed() {
         return this.hitPoints == 0;
     }
+
+
 }
