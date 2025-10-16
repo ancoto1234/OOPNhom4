@@ -1,5 +1,7 @@
 package powerups;
 
-public class PowerUp extends GameObject {
+import objects.GameObject;
+
+public class PowerUp {
     
 }

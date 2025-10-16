@@ -1,8 +1,7 @@
 package core;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Component;
+import java.awt.*;
+
 import objects.*;
 import powerups.PowerUp;
 
@@ -71,7 +70,7 @@ public class GameManager implements KeyListener, ActionListener{
             paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, 15);
             paddle.setImage(getImage("paddle"));
 
-            ball = new Ball(390, 530, 50, 50, 2, -2, 3);
+            ball = new Ball(390, 380, 50, 50, 2, -2, 3);
             ball.setImage(getImage("ball"));
             
             loadLevel(1);
@@ -110,14 +109,30 @@ public class GameManager implements KeyListener, ActionListener{
                 brick.render(g, observer);
             }
         }
+
+        //notif WIN or LOSE
+        if (gameState.equals("WIN")){
+            g.setColor(Color.GREEN);
+            g.setFont(new java.awt.Font("Arial", Font.BOLD, 50));
+            g.drawString("YOU WIN!", 300, 300);
+        } else if (gameState.equals("GAME OVER")){
+            g.setColor(Color.RED);
+            g.setFont(new java.awt.Font("Arial", Font.BOLD, 50));
+            g.drawString("GAME OVER", 300, 300);
+        }
     }
 
     public void updateGame() {
-        HandleInput();
-        ball.move();
-        ball.bounceOff();
-        checkCollisions();
-        
+       if (gameState.equals("START")){
+           HandleInput();
+           ball.move();
+           ball.bounceOff();
+           checkCollisions();
+
+           if (allBricksDestroyed()){
+               WinGame();
+           }
+       }
     }
 
     public void HandleInput(){
@@ -168,5 +183,23 @@ public class GameManager implements KeyListener, ActionListener{
 
     public void gameOver(){
         gameState = "GAME OVER";
+    }
+
+    public void WinGame(){
+        gameState = "WIN";
+    }
+
+    public String getGameState() {
+        return gameState;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
     }
 }

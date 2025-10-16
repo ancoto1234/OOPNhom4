@@ -1,6 +1,6 @@
 package objects;
 
-import core.DefaultRenderer;
+import core.Renderer;
 import org.w3c.dom.css.Rect;
 import java.awt.Rectangle;
 import java.awt.Graphics;
@@ -26,14 +26,15 @@ public class Ball extends MoveableObject{
     }
 
     public void bounceOff() {
-        if (this.x <= 0 || this.x + width >= DefaultRenderer.SCREEN_WIDTH) {
-            dx = dx*-1;
+        if (this.x <= 0 || this.x + width >= Renderer.SCREEN_WIDTH) {
+            dx = dx * -1;
             angle = Math.PI - angle; // Đảo ngược góc khi va chạm với tường bên
         } else if (this.y <= 0) {
-            dy = dy*-1;
+            dy = dy * -1;
             angle = -angle; // Đảo ngược góc khi va chạm với tường trên
         }
     }
+
     public boolean checkCollision(GameObject other) {
         Rectangle ballBounds = this.getBounds();
         Rectangle otherBounds = other.getBounds();
@@ -90,10 +91,8 @@ public class Ball extends MoveableObject{
         }
     }
 
-    
+    @Override
+    public void update() {
 
-
-    
-    
-
+    }
 }

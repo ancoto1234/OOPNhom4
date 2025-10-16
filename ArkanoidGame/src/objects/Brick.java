@@ -23,5 +23,8 @@ public class Brick extends GameObject {
         return this.hitPoints == 0;
     }
 
+    @Override
+    public void update() {
 
+    }
 }

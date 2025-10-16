@@ -13,11 +13,12 @@ public class MenuManager extends JFrame {
     private Renderer renderer;
     
     public MenuManager() {
-        setTitle("ArkanoidGame");
+        setTitle("Arkanoid Game");
         setSize(Renderer.SCREEN_WIDTH, Renderer.SCREEN_HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
+        setBackground(Color.CYAN);
 
         cardLayout = new CardLayout();
         setLayout(cardLayout);

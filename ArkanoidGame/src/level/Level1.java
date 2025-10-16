@@ -18,8 +18,8 @@ public class Level1 extends Level {
         int rows = 5;
         int cols = 11;
 
-        for (int r = 0;r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
+        for (int r = 0;r < rows; r += 2) {
+            for (int c = 0; c < cols; c += 2) {
                 int x = startX + c * (brickWidth);
                 int y = startY + r * (brickHeight);
                 Brick brick = new Brick(x, y, brickWidth, brickHeight, 1);

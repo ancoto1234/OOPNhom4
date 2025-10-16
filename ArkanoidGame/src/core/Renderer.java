@@ -20,7 +20,7 @@ public class Renderer extends JPanel implements ActionListener, KeyListener {
     public Renderer() {
         gameManager = new GameManager();
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-        setBackground(Color.BLACK);
+        setBackground(Color.CYAN);
         setFocusable(true);
         addKeyListener(this);
 

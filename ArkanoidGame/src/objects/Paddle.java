@@ -29,4 +29,9 @@ public class Paddle extends MoveableObject {
     public void appyPowerUp() {
 
     }
+
+    @Override
+    public void update() {
+
+    }
 }

@@ -49,7 +49,7 @@ public class MenuPanel extends JPanel {
         JButton button = new JButton(text);
         
         button.setFont(arcadeFont);
-        button.setForeground(Color.WHITE);
+        button.setForeground(Color.BLACK);
 
         button.setFocusPainted(false);
         button.setContentAreaFilled(false);
@@ -61,12 +61,12 @@ public class MenuPanel extends JPanel {
 
         button.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
-                button.setForeground(Color.BLACK);
+                button.setForeground(Color.BLUE);
                 button.setFont(arcadeFont.deriveFont(34f));
             }
 
             public void mouseExited(MouseEvent e) {
-                button.setForeground(Color.WHITE);
+                button.setForeground(Color.BLACK);
                 button.setFont(arcadeFont.deriveFont(30f));
             }
         });
