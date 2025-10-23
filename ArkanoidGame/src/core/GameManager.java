@@ -28,11 +28,13 @@ public class GameManager implements KeyListener, ActionListener{
     private String gameState;
     private Level currentLevel;
     private boolean leftPressed, rightPressed = false;
+    private Renderer renderer;
 
     // Quản lí ảnh
     private HashMap<String, BufferedImage> images;
 
-    public GameManager(){
+    public GameManager(Renderer renderer){
+        this.renderer = renderer;
         this.score = 0;
         this.gameState = "START";
         
@@ -61,7 +63,6 @@ public class GameManager implements KeyListener, ActionListener{
     }
 
     public void startGame(){
-
         try {
             int paddleWidth = Renderer.SCREEN_WIDTH / 6;
             int paddleHeight = Renderer.SCREEN_HEIGHT / 27;
@@ -76,7 +77,8 @@ public class GameManager implements KeyListener, ActionListener{
             loadLevel(1);
         } catch (Exception e) {
             System.out.println("Error initializing game objects " + e.getMessage());
-        }   
+        }
+        this.gameState = "PLAYING";
     }
 
     public void loadLevel(int index) {
@@ -123,7 +125,7 @@ public class GameManager implements KeyListener, ActionListener{
     }
 
     public void updateGame() {
-       if (gameState.equals("START")){
+       if (gameState.equals("PLAYING")){
            HandleInput();
            ball.move();
            ball.bounceOff();
@@ -131,6 +133,12 @@ public class GameManager implements KeyListener, ActionListener{
 
            if (allBricksDestroyed()){
                WinGame();
+               return;
+           }
+
+           if (ball.getY() > Renderer.SCREEN_HEIGHT) {
+               gameOver();
+               return;
            }
        }
     }
@@ -142,6 +150,11 @@ public class GameManager implements KeyListener, ActionListener{
         if (rightPressed && !leftPressed){
             paddle.move_Right();
         }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
     }
 
     public void keyPressed(KeyEvent e) {
@@ -181,12 +194,17 @@ public class GameManager implements KeyListener, ActionListener{
         return bricks.isEmpty();
     }
 
-    public void gameOver(){
+    public void gameOver() {
         gameState = "GAME OVER";
+        if (renderer != null) {
+            renderer.gameFinished("GAME OVER", score);
+        }
     }
-
     public void WinGame(){
         gameState = "WIN";
+        if (renderer != null) {
+            renderer.gameFinished("CONGRATULATIONS!", score);
+        }
     }
 
     public String getGameState() {
@@ -194,12 +212,23 @@ public class GameManager implements KeyListener, ActionListener{
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+
+//    @Override
+//    public void keyTyped(KeyEvent e) {
+//
+//    }
+/*
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
-    }
+    }*/
 }

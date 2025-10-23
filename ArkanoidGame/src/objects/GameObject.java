@@ -40,4 +40,11 @@ public abstract class GameObject {
         return new Rectangle(x, y, width, height);
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }
