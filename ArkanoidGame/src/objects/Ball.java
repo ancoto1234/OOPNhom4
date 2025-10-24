@@ -44,7 +44,7 @@ public class Ball extends MoveableObject{
         }
         return false;
 
-        
+
     }
     @Override
 

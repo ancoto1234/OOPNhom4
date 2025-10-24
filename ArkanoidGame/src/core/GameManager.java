@@ -25,19 +25,18 @@ public class GameManager implements KeyListener, ActionListener{
     private List<PowerUp> powerUps;
     private int score;
     private int lives;
+    private int choosedLevel;
     private String gameState;
     private Level currentLevel;
     private boolean leftPressed, rightPressed = false;
-    private Renderer renderer;
 
     // Quản lí ảnh
     private HashMap<String, BufferedImage> images;
 
-    public GameManager(Renderer renderer){
-        this.renderer = renderer;
+    public GameManager(){
         this.score = 0;
         this.gameState = "START";
-        
+
         if (this.gameState == "START"){
             loadImages();
             startGame();
@@ -46,12 +45,12 @@ public class GameManager implements KeyListener, ActionListener{
 
     public void loadImages() {
         images = new HashMap<>();
-        
+
         try {
             images.put("paddle", ImageIO.read(new File("ArkanoidGame/assets/paddle.png")));
             images.put("ball", ImageIO.read(new File("ArkanoidGame/assets/ball.png")));
             images.put("brick", ImageIO.read(new File("ArkanoidGame/assets/brick.png")));
-            
+
         } catch (Exception e) {
             System.out.println("Error loading images: " + e.getMessage());
         }
@@ -73,18 +72,23 @@ public class GameManager implements KeyListener, ActionListener{
 
             ball = new Ball(390, 380, 50, 50, 2, -2, 3);
             ball.setImage(getImage("ball"));
-            
-            loadLevel(1);
+
+            loadLevel(choosedLevel);
         } catch (Exception e) {
             System.out.println("Error initializing game objects " + e.getMessage());
         }
-        this.gameState = "PLAYING";
     }
 
     public void loadLevel(int index) {
         switch (index) {
             case 1:
                 currentLevel = new Level1(this);
+                break;
+            case 2:
+                currentLevel = new Level2(this);
+                break;
+            case 3:
+                currentLevel = new Level3(this);
                 break;
             default:
                 System.out.println("Level not found!");
@@ -111,6 +115,9 @@ public class GameManager implements KeyListener, ActionListener{
                 brick.render(g, observer);
             }
         }
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.drawString("Score: " + score, 10, 25);
 
         //notif WIN or LOSE
         if (gameState.equals("WIN")){
@@ -125,22 +132,16 @@ public class GameManager implements KeyListener, ActionListener{
     }
 
     public void updateGame() {
-       if (gameState.equals("PLAYING")){
-           HandleInput();
-           ball.move();
-           ball.bounceOff();
-           checkCollisions();
+        if (gameState.equals("START")){
+            HandleInput();
+            ball.move();
+            ball.bounceOff();
+            checkCollisions();
 
-           if (allBricksDestroyed()){
-               WinGame();
-               return;
-           }
-
-           if (ball.getY() > Renderer.SCREEN_HEIGHT) {
-               gameOver();
-               return;
-           }
-       }
+            if (allBricksDestroyed()){
+                WinGame();
+            }
+        }
     }
 
     public void HandleInput(){
@@ -179,13 +180,14 @@ public class GameManager implements KeyListener, ActionListener{
         }
         for (Brick brick : bricks) {
             if (ball.checkCollision(brick)) {
+                this.score += 10;
                 ball.bounceOff();
                 brick.takeHits();
                 if (brick.isDestroyed()) {
                     bricks.remove(brick);
                     break;
                 }
-                
+
             }
         }
     }
@@ -194,17 +196,12 @@ public class GameManager implements KeyListener, ActionListener{
         return bricks.isEmpty();
     }
 
-    public void gameOver() {
+    public void gameOver(){
         gameState = "GAME OVER";
-        if (renderer != null) {
-            renderer.gameFinished("GAME OVER", score);
-        }
     }
+
     public void WinGame(){
         gameState = "WIN";
-        if (renderer != null) {
-            renderer.gameFinished("CONGRATULATIONS!", score);
-        }
     }
 
     public String getGameState() {
@@ -216,7 +213,12 @@ public class GameManager implements KeyListener, ActionListener{
 
     }
 
-
+    public void setLevel(int level) {
+        this.choosedLevel = level;
+    }
+    public void setupLevel(int level) {
+        loadLevel(level);
+    }
 //    @Override
 //    public void keyTyped(KeyEvent e) {
 //
