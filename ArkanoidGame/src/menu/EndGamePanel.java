@@ -43,12 +43,12 @@ public class EndGamePanel extends JPanel {
         add(scoreLabel, gbc);
 
         // 3. Nút Play Again
-        JButton playAgainButton = createMenuButton("Play Again", e -> manager.startGame());
+        JButton playAgainButton = createMenuButton("Play Again", e -> manager.restartGame());
         gbc.gridy = 2;
         add(playAgainButton, gbc);
 
         // 4. Nút Main Menu
-        JButton mainMenuButton = createMenuButton("Main Menu", e -> manager.showMenu());
+        JButton mainMenuButton = createMenuButton("Main Menu", e -> manager.showMenuAtEndGame());
         gbc.gridy = 3;
         add(mainMenuButton, gbc);
 

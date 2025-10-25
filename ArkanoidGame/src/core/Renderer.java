@@ -14,10 +14,11 @@ public class Renderer extends JPanel implements ActionListener, KeyListener {
     private final int FPS = 60;
     private boolean isRunning = false;
     private boolean leftPressed, rightPressed = false;
+    private MenuManager menuManager;
 
 
-
-    public Renderer() {
+    public Renderer(MenuManager menuManager) {
+        this.menuManager = menuManager;
         gameManager = new GameManager();
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         setBackground(Color.CYAN);
@@ -43,9 +44,16 @@ public class Renderer extends JPanel implements ActionListener, KeyListener {
 
     public void actionPerformed(ActionEvent e) {
         gameManager.updateGame();
+
+        String gameState = gameManager.getGameState();
+        if (gameState.equals("GAME OVER") || gameState.equals("WIN")) {
+            stopGameLoop();
+            String status = gameState.equals("WIN") ? "YOU WIN!" : "GAME OVER";
+            menuManager.showEndGame(status, gameManager.getScore());
+        }
+
         repaint();
     }
-
     @Override
     public void keyPressed(KeyEvent e) {
         gameManager.keyPressed(e);

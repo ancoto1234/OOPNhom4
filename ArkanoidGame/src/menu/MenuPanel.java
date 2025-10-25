@@ -36,8 +36,6 @@ public class MenuPanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
-
-
         JButton selectLevelButton = createMenuButton("Level", e -> toggleLevelPanel());
         add(selectLevelButton, gbc);
         gbc.gridy += 1;
@@ -52,7 +50,7 @@ public class MenuPanel extends JPanel {
         gbc.gridy += 1;
         levelPanel = new JPanel();
         levelPanel.setOpaque(false);
-        levelPanel.setVisible(false); // ẩn mặc định
+        levelPanel.setVisible(false);
         levelPanel.setLayout(new GridLayout(1, 3, 10, 10));
 
         JButton level1 = createMenuButton("Level 1", e -> startSelectedLevel(1));
@@ -117,16 +115,5 @@ public class MenuPanel extends JPanel {
             int logoWidth = getWidth() / 2 - logoImage.getWidth() / 2;
             g.drawImage(logoImage, logoWidth, 60,null);
         }
-        /*
-        g.setFont(arcadeFont.deriveFont(36f));
-        g.setColor(Color.BLACK);
-        g.drawString("SELECT LEVEL", getWidth() / 2 - 150, 200);
-
-         */
     }
-
-
-
-
-
 }
