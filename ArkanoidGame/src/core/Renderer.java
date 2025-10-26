@@ -5,7 +5,6 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Renderer extends JPanel implements ActionListener, KeyListener {
-
     public static final int SCREEN_WIDTH = 800;
     public static final int SCREEN_HEIGHT = 600;
 
@@ -54,6 +53,7 @@ public class Renderer extends JPanel implements ActionListener, KeyListener {
 
         repaint();
     }
+
     @Override
     public void keyPressed(KeyEvent e) {
         gameManager.keyPressed(e);

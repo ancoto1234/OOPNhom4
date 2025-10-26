@@ -15,8 +15,8 @@ public class Level2 extends Level {
         int startY = 50;
         int brickWidth = 42;
         int brickHeight = 20;
-        int rows = 16;
-        int cols = 16;
+        int rows = 15;
+        int cols = 15;
 
         for (int r = 0; r < rows; r+=2) {
             for (int c = 0; c <= r; c+=2) {

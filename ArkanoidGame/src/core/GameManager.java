@@ -22,6 +22,7 @@ public class GameManager implements KeyListener, ActionListener{
     private int score;
     private int lives;
     private int choosedLevel;
+    private int totalLevel = 3;
     private String gameState;
     private Level currentLevel;
     private boolean leftPressed, rightPressed = false;
@@ -86,6 +87,7 @@ public class GameManager implements KeyListener, ActionListener{
     public void resetGame() {
         this.score = 0;
         this.lives = 2;
+        this.choosedLevel = 1;
         this.gameState = "START";
         this.isSpaced = false;
         initGame();
@@ -106,7 +108,6 @@ public class GameManager implements KeyListener, ActionListener{
                 System.out.println("Level not found!");
                 return;
         }
-
         bricks = currentLevel.getBricks();
     }
 
@@ -182,10 +183,6 @@ public class GameManager implements KeyListener, ActionListener{
         }
     }
 
-    public int getCurrentLevel() {
-        return this.choosedLevel;
-    }
-
     public void checkCollisions(){
         if (ball.checkCollision(paddle)){
             ball.bounceOff();
@@ -204,16 +201,25 @@ public class GameManager implements KeyListener, ActionListener{
         }
     }
 
-    public boolean allBricksDestroyed() {
-        return bricks.isEmpty();
-    }
-
     public void gameOver(){
         gameState = "GAME OVER";
     }
 
     public void WinGame(){
-        gameState = "WIN";
+        if (choosedLevel < totalLevel) {
+            choosedLevel++;
+            loadLevel(choosedLevel);
+            ball.resetBall(paddle);
+            paddle.resetPaddle();
+            isSpaced = false;
+            gameState = "START";
+        } else {
+            gameState = "WIN";
+        }
+    }
+
+    public boolean allBricksDestroyed() {
+        return bricks.isEmpty();
     }
 
     public String getGameState() {
@@ -226,6 +232,10 @@ public class GameManager implements KeyListener, ActionListener{
 
     public void setupLevel(int level) {
         loadLevel(level);
+    }
+
+    public int getCurrentLevel() {
+        return this.choosedLevel;
     }
 
     public int getScore() {
