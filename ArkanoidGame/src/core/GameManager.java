@@ -25,12 +25,15 @@ public class GameManager implements KeyListener, ActionListener{
     private String gameState;
     private Level currentLevel;
     private boolean leftPressed, rightPressed = false;
+    private boolean isSpaced;
 
     // Quản lí ảnh
     private HashMap<String, BufferedImage> images;
 
     public GameManager(){
         this.score = 0;
+        this.lives = 2;
+        this.isSpaced = false;
         this.gameState = "START";
 
         if (this.gameState == "START"){
@@ -66,7 +69,12 @@ public class GameManager implements KeyListener, ActionListener{
             paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, 15);
             paddle.setImage(getImage("paddle"));
 
-            ball = new Ball(390, 380, 50, 50, 2, -2, 3);
+            int ballWidth = 50;
+            int ballHeight = 50;
+            int ballX = paddleX + paddleWidth / 2 - ballWidth / 2;
+            int ballY = paddleY - ballHeight - 5;
+
+            ball = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 2);
             ball.setImage(getImage("ball"));
 
             loadLevel(choosedLevel);
@@ -77,7 +85,9 @@ public class GameManager implements KeyListener, ActionListener{
 
     public void resetGame() {
         this.score = 0;
+        this.lives = 2;
         this.gameState = "START";
+        this.isSpaced = false;
         initGame();
     }
 
@@ -120,6 +130,7 @@ public class GameManager implements KeyListener, ActionListener{
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 20));
         g.drawString("Score: " + score, 10, 25);
+        g.drawString("Lives: " + lives, 700,25);
 
         //notif WIN or LOSE
         if (gameState.equals("WIN")){
@@ -135,14 +146,25 @@ public class GameManager implements KeyListener, ActionListener{
 
     public void updateGame() {
         if (gameState.equals("START")){
+            if (isSpaced == false) {
+                return;
+            }
             HandleInput();
             ball.move();
             ball.bounceOff();
             checkCollisions();
 
             if (ball.getY() > Renderer.SCREEN_HEIGHT) {
-                gameOver();
-                return;
+                lives--;
+                if (lives <= 0) {
+                    gameOver();
+                    return;
+                } else {
+                    ball.resetBall(paddle);
+                    paddle.resetPaddle();
+                    isSpaced = false;
+                    return;
+                }
             }
 
             if (allBricksDestroyed()){
@@ -220,6 +242,8 @@ public class GameManager implements KeyListener, ActionListener{
             leftPressed = true;
         } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             rightPressed = true;
+        } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            isSpaced = true;
         }
     }
 

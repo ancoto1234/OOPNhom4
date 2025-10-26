@@ -1,5 +1,7 @@
 package objects;
 
+import core.Renderer;
+
 import java.awt.event.KeyEvent;
 
 public class Paddle extends MoveableObject {
@@ -22,7 +24,11 @@ public class Paddle extends MoveableObject {
         if (x + width > 800) {
             x = 800 - width;
         }
-        
+    }
+
+    public void resetPaddle() {
+        this.x = (Renderer.SCREEN_WIDTH - this.width) / 2;
+        this.y =  Renderer.SCREEN_HEIGHT - this.height - 40;
     }
 
 
