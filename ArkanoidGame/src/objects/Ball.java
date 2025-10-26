@@ -43,8 +43,6 @@ public class Ball extends MoveableObject{
             return true;
         }
         return false;
-
-        
     }
     @Override
 
@@ -57,8 +55,17 @@ public class Ball extends MoveableObject{
         if (angle >= 2 * Math.PI) {
             angle -= Math.PI * 2; // Đặt lại góc khi vượt quá 2π
         }
-
         rotateImage();
+    }
+
+    public void resetBall(Paddle paddle) {
+        int ballX = (Renderer.SCREEN_WIDTH - this.width) / 2;
+        int ballY = Renderer.SCREEN_HEIGHT - paddle.height - 40 - this.height - 5;
+
+        this.x = ballX;
+        this.y = ballY;
+        this.dx = 2;
+        this.dy = -3;
     }
 
     private void rotateImage() {

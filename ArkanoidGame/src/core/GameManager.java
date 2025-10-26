@@ -12,7 +12,6 @@ import java.util.*;
 import level.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.nio.Buffer;
@@ -26,6 +25,8 @@ public class GameManager implements KeyListener, ActionListener{
     private List<PowerUp> powerUps;
     private int score;
     private int lives;
+    private int choosedLevel;
+    private int totalLevel = 3;
     private String gameState;
     private Level currentLevel;
     private boolean leftPressed, rightPressed = false;
@@ -38,17 +39,20 @@ public class GameManager implements KeyListener, ActionListener{
     public HashMap<String, BufferedImage> getImages() {
         return images;
     }
+    private boolean isSpaced;
 
     // Quản lí ảnh
     private HashMap<String, BufferedImage> images;
 
     public GameManager(){
         this.score = 0;
+        this.lives = 2;
+        this.isSpaced = false;
         this.gameState = "START";
         
         if (this.gameState.equals("START")){
             loadImages();
-            startGame();
+            initGame();
 
             powerUps = new ArrayList<>();
             activeEffects = new ArrayList<>();
@@ -58,7 +62,7 @@ public class GameManager implements KeyListener, ActionListener{
 
     public void loadImages() {
         images = new HashMap<>();
-        
+
         try {
             images.put("paddle", ImageIO.read(new File("ArkanoidGame/assets/paddle.png")));
             images.put("ball", ImageIO.read(new File("ArkanoidGame/assets/ball.png")));
@@ -76,13 +80,12 @@ public class GameManager implements KeyListener, ActionListener{
         return images.get(key);
     }
 
-    public void startGame(){
-
+    public void initGame(){
         try {
             int paddleWidth = Renderer.SCREEN_WIDTH / 6;
             int paddleHeight = Renderer.SCREEN_HEIGHT / 27;
             int paddleX = (Renderer.SCREEN_WIDTH - paddleWidth) / 2;
-            int paddleY = Renderer.SCREEN_HEIGHT - paddleHeight - 60;
+            int paddleY = Renderer.SCREEN_HEIGHT - paddleHeight - 40;
             paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, 15);
             paddle.setImage(getImage("paddle"));
 
@@ -90,12 +93,27 @@ public class GameManager implements KeyListener, ActionListener{
             this.originalPaddleImage = paddle.getImage();
 
             ball = new Ball(390, 380, 50, 50, 2, -2, 3);
+            int ballWidth = 50;
+            int ballHeight = 50;
+            int ballX = paddleX + paddleWidth / 2 - ballWidth / 2;
+            int ballY = paddleY - ballHeight - 5;
+
+            ball = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 2);
             ball.setImage(getImage("ball"));
-            
-            loadLevel(1);
+
+            loadLevel(choosedLevel);
         } catch (Exception e) {
             System.out.println("Error initializing game objects " + e.getMessage());
-        }   
+        }
+    }
+
+    public void resetGame() {
+        this.score = 0;
+        this.lives = 2;
+        this.choosedLevel = 1;
+        this.gameState = "START";
+        this.isSpaced = false;
+        initGame();
     }
 
     public void loadLevel(int index) {
@@ -103,11 +121,16 @@ public class GameManager implements KeyListener, ActionListener{
             case 1:
                 currentLevel = new Level1(this);
                 break;
+            case 2:
+                currentLevel = new Level2(this);
+                break;
+            case 3:
+                currentLevel = new Level3(this);
+                break;
             default:
                 System.out.println("Level not found!");
                 return;
         }
-
         bricks = currentLevel.getBricks();
     }
 
@@ -128,6 +151,10 @@ public class GameManager implements KeyListener, ActionListener{
                 brick.render(g, observer);
             }
         }
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.drawString("Score: " + score, 10, 25);
+        g.drawString("Lives: " + lives, 700,25);
 
         if (powerUps != null) {
             // Dùng try-catch để tránh lỗi nếu vừa thêm/xóa đồng thời
@@ -154,19 +181,40 @@ public class GameManager implements KeyListener, ActionListener{
     }
 
     public void updateGame() {
-       if (gameState.equals("START")){
+       if (gameState.equals("START")) {
            HandleInput();
            ball.move();
            ball.bounceOff();
            checkCollisions();
            updatePowerUps();
-
-           updateActiveEffects();
-
-           if (allBricksDestroyed()){
-               WinGame();
-           }
        }
+           updateActiveEffects();
+        if (gameState.equals("START")){
+            if (isSpaced == false) {
+                return;
+            }
+            HandleInput();
+            ball.move();
+            ball.bounceOff();
+            checkCollisions();
+
+            if (ball.getY() > Renderer.SCREEN_HEIGHT) {
+                lives--;
+                if (lives <= 0) {
+                    gameOver();
+                    return;
+                } else {
+                    ball.resetBall(paddle);
+                    paddle.resetPaddle();
+                    isSpaced = false;
+                    return;
+                }
+            }
+
+            if (allBricksDestroyed()){
+                WinGame();
+            }
+        }
     }
 
     private class ActiveEffect {
@@ -249,22 +297,6 @@ public class GameManager implements KeyListener, ActionListener{
         }
     }
 
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            leftPressed = true;
-        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            rightPressed = true;
-        }
-    }
-
-    public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            leftPressed = false;
-        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            rightPressed = false;
-        }
-    }
-
     public void checkCollisions(){
         if (ball.checkCollision(paddle)){
             ball.bounceOff();
@@ -274,6 +306,7 @@ public class GameManager implements KeyListener, ActionListener{
         while (it.hasNext()){
             Brick brick = it.next();
             if (ball.checkCollision(brick)) {
+                this.score += 10;
                 ball.bounceOff();
                 brick.takeHits();
                 if (brick.isDestroyed()) {
@@ -282,25 +315,49 @@ public class GameManager implements KeyListener, ActionListener{
                     break;
                 }
             }
-
         }
     }
 
-
-    public boolean allBricksDestroyed() {
-        return bricks.isEmpty();
-    }
 
     public void gameOver(){
         gameState = "GAME OVER";
     }
 
     public void WinGame(){
-        gameState = "WIN";
+        if (choosedLevel < totalLevel) {
+            choosedLevel++;
+            loadLevel(choosedLevel);
+            ball.resetBall(paddle);
+            paddle.resetPaddle();
+            isSpaced = false;
+            gameState = "START";
+        } else {
+            gameState = "WIN";
+        }
+    }
+
+    public boolean allBricksDestroyed() {
+        return bricks.isEmpty();
     }
 
     public String getGameState() {
         return gameState;
+    }
+
+    public void setLevel(int level) {
+        this.choosedLevel = level;
+    }
+
+    public void setupLevel(int level) {
+        loadLevel(level);
+    }
+
+    public int getCurrentLevel() {
+        return this.choosedLevel;
+    }
+
+    public int getScore() {
+        return this.score;
     }
 
     @Override
@@ -325,8 +382,27 @@ public class GameManager implements KeyListener, ActionListener{
     }
 
 
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            leftPressed = true;
+        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            rightPressed = true;
+        } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            isSpaced = true;
+        }
+    }
+
+    public void keyReleased(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            leftPressed = false;
+        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            rightPressed = false;
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
     }
+
 }
