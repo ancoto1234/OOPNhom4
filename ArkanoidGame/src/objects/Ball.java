@@ -1,19 +1,18 @@
 package objects;
 
 import core.Renderer;
-import org.w3c.dom.css.Rect;
-import java.awt.Rectangle;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 
 
 public class Ball extends MoveableObject{
     private int speed;
-    private int dx;
-    private int dy;
+    private double dx;
+    private double dy;
     private double angle; // Góc di chuyển của bóng
     private BufferedImage rotatedImage;
 
@@ -25,24 +24,62 @@ public class Ball extends MoveableObject{
         this.angle = 0;
     }
 
-    public void bounceOff() {
-        if (this.x <= 0 || this.x + width >= Renderer.SCREEN_WIDTH) {
-            dx = dx * -1;
+    public void bounceOffWall() {
+        if (x <= 0) {
+            x = 1;
+            dx = Math.abs(dx);
             angle = Math.PI - angle; // Đảo ngược góc khi va chạm với tường bên
-        } else if (this.y <= 0) {
-            dy = dy * -1;
+        } else if (y <= 0) {
+            y = 1;
+            dy = -dy;
             angle = -angle; // Đảo ngược góc khi va chạm với tường trên
+        } else if (x + width >= Renderer.SCREEN_WIDTH) {
+            x = Renderer.SCREEN_WIDTH - width - 1;
+            dx = -Math.abs(dx);
         }
     }
 
-    public boolean checkCollision(GameObject other) {
+    public void bounceOffPaddle(Paddle paddle) {
         Rectangle ballBounds = this.getBounds();
-        Rectangle otherBounds = other.getBounds();
-        if (ballBounds.intersects(otherBounds)) {
-            dy = dy * -1;
-            return true;
+        Rectangle paddleBounds = paddle.getBounds();
+
+        double paddleCenter = paddleBounds.getX() + paddleBounds.getWidth() / 2;
+        double ballCenter = ballBounds.getX() + ballBounds.getWidth() / 2;
+        double relativeIntersect = (ballCenter - paddleCenter) / (paddleBounds.getWidth() / 2);
+
+        relativeIntersect = Math.max(-1, Math.min(1, relativeIntersect));
+
+        double bounceAngle = relativeIntersect * Math.toRadians(60);
+
+        dx = Math.sin(bounceAngle);
+        dy = -dy;
+
+
+        y = (paddle.getY() - height - 1);
+
+    }
+
+    public void bounceOffBrick(Brick brick) {
+        Rectangle ballBounds = this.getBounds();
+        Rectangle brickBounds = brick.getBounds();
+
+        int overlapLeft = ballBounds.x + ballBounds.width - brickBounds.x;
+        int overlapRight = brickBounds.x + brickBounds.width - ballBounds.x;
+        int overlapTop = ballBounds.y + ballBounds.height - brickBounds.y;
+        int overlapBottom = brickBounds.y + brickBounds.height - ballBounds.y;
+
+        int minOverLap = Math.min(Math.min(overlapLeft, overlapRight), Math.min(overlapBottom, overlapTop));
+
+        if (minOverLap == overlapLeft || minOverLap == overlapRight) {
+            dx = -dx;
+        } else {
+            dy = -dy;
         }
-        return false;
+
+    }
+
+    public boolean checkCollision(GameObject other) {
+        return this.getBounds().intersects(other.getBounds());
     }
     @Override
 
@@ -50,10 +87,10 @@ public class Ball extends MoveableObject{
         x += dx * speed;
         y += dy * speed;
 
-        angle -= 0.2; // Tăng góc để tạo hiệu ứng xoay
+        angle += 0.2; // Tăng góc để tạo hiệu ứng xoay
 
-        if (angle >= 2 * Math.PI) {
-            angle -= Math.PI * 2; // Đặt lại góc khi vượt quá 2π
+        if (angle > 360) {
+            angle = 0; // Đặt lại góc khi vượt quá 2π
         }
         rotateImage();
     }
@@ -66,6 +103,7 @@ public class Ball extends MoveableObject{
         this.y = ballY;
         this.dx = 2;
         this.dy = -3;
+        this.angle = 0;
     }
 
     private void rotateImage() {
