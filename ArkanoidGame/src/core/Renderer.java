@@ -22,6 +22,7 @@ public class Renderer extends JPanel implements ActionListener, KeyListener {
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         setBackground(Color.CYAN);
         setFocusable(true);
+        setDoubleBuffered(true);
         addKeyListener(this);
 
         timer = new Timer(1000 / FPS, this);
