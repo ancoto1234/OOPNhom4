@@ -2,8 +2,6 @@ package objects;
 
 import core.Renderer;
 
-import java.awt.event.KeyEvent;
-
 public class Paddle extends MoveableObject {
     private final int speed;
 
