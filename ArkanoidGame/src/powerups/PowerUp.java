@@ -1,10 +1,8 @@
 package powerups;
 
 import core.GameManager;
-import objects.GameObject;
-import objects.MoveableObject;
-
 import java.awt.image.BufferedImage;
+import objects.MoveableObject;
 
 public abstract class PowerUp extends MoveableObject{
 
