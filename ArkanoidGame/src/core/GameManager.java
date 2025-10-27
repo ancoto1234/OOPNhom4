@@ -1,21 +1,17 @@
 package core;
 
 import java.awt.*;
-
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.*;
+import java.util.List;
+import javax.imageio.ImageIO;
+import level.*;
 import objects.*;
 import powerups.ExpandPadllePowerUp;
 import powerups.FastBallPowerUp;
 import powerups.PowerUp;
-
-import java.util.*;
-
-import level.*;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.nio.Buffer;
-import java.util.List;
 
 
 public class GameManager implements KeyListener, ActionListener{
@@ -25,6 +21,7 @@ public class GameManager implements KeyListener, ActionListener{
     private List<PowerUp> powerUps;
     private int score;
     private int lives;
+    private int maxLives;
     private int choosedLevel;
     private int totalLevel = 3;
     private String gameState;
@@ -35,6 +32,11 @@ public class GameManager implements KeyListener, ActionListener{
     private BufferedImage originalPaddleImage;
     private Random rand;
     private boolean isBallOnPaddle;
+    private Font font;
+
+    //Image
+    private BufferedImage heart;
+    private BufferedImage damage;
 
     public HashMap<String, BufferedImage> getImages() {
         return images;
@@ -46,7 +48,8 @@ public class GameManager implements KeyListener, ActionListener{
 
     public GameManager(){
         this.score = 0;
-        this.lives = 2;
+        this.lives = 3;
+        this.maxLives = 3;
         this.isSpaced = false;
         this.gameState = "START";
         
@@ -62,16 +65,31 @@ public class GameManager implements KeyListener, ActionListener{
 
     public void loadImages() {
         images = new HashMap<>();
+        
 
         try {
             images.put("paddle", ImageIO.read(new File("ArkanoidGame/assets/paddle.png")));
             images.put("ball", ImageIO.read(new File("ArkanoidGame/assets/ball.png")));
             images.put("brick", ImageIO.read(new File("ArkanoidGame/assets/brick.png")));
-            images.put("paddle_expand", ImageIO.read(new File("ArkanoidGame/assets/expanded_paddle.png")));
-            images.put("powerup_expand", ImageIO.read(new File("ArkanoidGame/assets/power_expand.png")));
-            images.put("powerup_fastball", ImageIO.read(new File("ArkanoidGame/assets/power_fastball.png")));
+
+            //Load Hearts
+            heart = ImageIO.read(new File("ArkanoidGame/assets/heart.png"));
+            damage = ImageIO.read(new File("ArkanoidGame/assets/damage.png"));
+
+            System.out.println(heart == null);
+
+            // images.put("paddle_expand", ImageIO.read(new File("ArkanoidGame/assets/expanded_paddle.png")));
+            images.put("powerup_expand", ImageIO.read(new File("ArkanoidGame/assets/experience.png")));
+            /// images.put("powerup_fastball", ImageIO.read(new File("ArkanoidGame/assets/power_fastball.png")));
+
+            //Font
+            font = Font.createFont(Font.TRUETYPE_FONT, new java.io.File("ArkanoidGame/assets/font.ttf")).deriveFont(20f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(font);
         } catch (Exception e) {
             System.out.println("Error loading images: " + e.getMessage());
+            font = new Font("Arial", Font.PLAIN, 20 );
+            e.printStackTrace();
         }
 
     }
@@ -92,24 +110,24 @@ public class GameManager implements KeyListener, ActionListener{
             this.originalPaddleWidth = paddleWidth;
             this.originalPaddleImage = paddle.getImage();
 
-            ball = new Ball(390, 380, 50, 50, 2, -2, 3);
             int ballWidth = 50;
             int ballHeight = 50;
             int ballX = paddleX + paddleWidth / 2 - ballWidth / 2;
             int ballY = paddleY - ballHeight - 5;
 
-            ball = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 2);
+            ball = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 4);
             ball.setImage(getImage("ball"));
 
             loadLevel(choosedLevel);
         } catch (Exception e) {
             System.out.println("Error initializing game objects " + e.getMessage());
+
         }
     }
 
     public void resetGame() {
         this.score = 0;
-        this.lives = 2;
+        this.lives = 3;
         this.choosedLevel = 1;
         this.gameState = "START";
         this.isSpaced = false;
@@ -134,6 +152,7 @@ public class GameManager implements KeyListener, ActionListener{
         bricks = currentLevel.getBricks();
     }
 
+
     public void render(Graphics g, Component observer) {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, 800, 600);
@@ -151,10 +170,23 @@ public class GameManager implements KeyListener, ActionListener{
                 brick.render(g, observer);
             }
         }
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 20));
-        g.drawString("Score: " + score, 10, 25);
-        g.drawString("Lives: " + lives, 700,25);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(font);
+        g2d.drawString("Score: " + score, 10, 25);
+        g2d.drawString("Lives: ", 600,25);
+
+        for (int i = 0;i < maxLives;i++) {
+            int x = (600 + 65) + i * (heart.getWidth() - 6);
+            int y = 30 - heart.getHeight() + 14;
+            if (i < lives) {
+                g.drawImage(heart, x, y, 20, 20, null);
+            }
+
+            else {
+                g.drawImage(damage, x, y, 20, 20, null);
+            }
+        }
 
         if (powerUps != null) {
             // Dùng try-catch để tránh lỗi nếu vừa thêm/xóa đồng thời
@@ -169,37 +201,26 @@ public class GameManager implements KeyListener, ActionListener{
             }
         }
         //notif WIN or LOSE
-        if (gameState.equals("WIN")){
-            g.setColor(Color.GREEN);
-            g.setFont(new java.awt.Font("Arial", Font.BOLD, 50));
-            g.drawString("YOU WIN!", 300, 300);
-        } else if (gameState.equals("GAME OVER")){
-            g.setColor(Color.RED);
-            g.setFont(new java.awt.Font("Arial", Font.BOLD, 50));
-            g.drawString("GAME OVER", 300, 300);
-        }
     }
 
     public void updateGame() {
-       if (gameState.equals("START")) {
-           HandleInput();
-           ball.move();
-           ball.bounceOff();
-           checkCollisions();
-           updatePowerUps();
-       }
-           updateActiveEffects();
+        HandleInput();
         if (gameState.equals("START")){
             if (isSpaced == false) {
+                ball.setX(paddle.getX() + paddle.getWidth() / 2 - ball.getWidth() / 2);
+                ball.setY(paddle.getY() - ball.getHeight());
                 return;
+                
             }
-            HandleInput();
+            
             ball.move();
-            ball.bounceOff();
+            ball.bounceOffWall();
             checkCollisions();
+            updatePowerUps();
 
             if (ball.getY() > Renderer.SCREEN_HEIGHT) {
-                lives--;
+                lives -= 1;
+                powerUps.clear();
                 if (lives <= 0) {
                     gameOver();
                     return;
@@ -215,6 +236,8 @@ public class GameManager implements KeyListener, ActionListener{
                 WinGame();
             }
         }
+
+        updateActiveEffects();
     }
 
     private class ActiveEffect {
@@ -278,12 +301,12 @@ public class GameManager implements KeyListener, ActionListener{
 
     public void spawnPowerUp(int x, int y){
         if (rand.nextFloat() < 0.3){
-            int powerUpSize = 30;
+            int powerUpSize = 23;
 
             if (rand.nextBoolean()) {
                 powerUps.add(new ExpandPadllePowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_expand")));
             } else {
-                powerUps.add(new FastBallPowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_fastball")));
+                powerUps.add(new FastBallPowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_expand")));
             }
         }
     }
@@ -299,15 +322,15 @@ public class GameManager implements KeyListener, ActionListener{
 
     public void checkCollisions(){
         if (ball.checkCollision(paddle)){
-            ball.bounceOff();
+            ball.bounceOffPaddle(paddle);
         }
 
         Iterator <Brick> it = bricks.iterator();
         while (it.hasNext()){
             Brick brick = it.next();
             if (ball.checkCollision(brick)) {
+                ball.bounceOffBrick(brick);
                 this.score += 10;
-                ball.bounceOff();
                 brick.takeHits();
                 if (brick.isDestroyed()) {
                     it.remove();
@@ -321,6 +344,7 @@ public class GameManager implements KeyListener, ActionListener{
 
     public void gameOver(){
         gameState = "GAME OVER";
+        
     }
 
     public void WinGame(){
