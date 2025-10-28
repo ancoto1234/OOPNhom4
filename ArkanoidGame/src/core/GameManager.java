@@ -48,7 +48,7 @@ public class GameManager implements KeyListener, ActionListener{
 
     public GameManager(){
         this.score = 0;
-        this.lives = 3;
+        this.lives = 1;
         this.maxLives = 3;
         this.isSpaced = false;
         this.gameState = "START";
@@ -83,7 +83,7 @@ public class GameManager implements KeyListener, ActionListener{
             /// images.put("powerup_fastball", ImageIO.read(new File("ArkanoidGame/assets/power_fastball.png")));
 
             //Font
-            font = Font.createFont(Font.TRUETYPE_FONT, new java.io.File("ArkanoidGame/assets/font.ttf")).deriveFont(20f);
+            font = Font.createFont(Font.TRUETYPE_FONT, new java.io.File("ArkanoidGame/assets/font.ttf")).deriveFont(17f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(font);
         } catch (Exception e) {
@@ -110,8 +110,8 @@ public class GameManager implements KeyListener, ActionListener{
             this.originalPaddleWidth = paddleWidth;
             this.originalPaddleImage = paddle.getImage();
 
-            int ballWidth = 50;
-            int ballHeight = 50;
+            int ballWidth = 25;
+            int ballHeight = 25;
             int ballX = paddleX + paddleWidth / 2 - ballWidth / 2;
             int ballY = paddleY - ballHeight - 5;
 
@@ -125,14 +125,6 @@ public class GameManager implements KeyListener, ActionListener{
         }
     }
 
-    public void resetGame() {
-        this.score = 0;
-        this.lives = 3;
-        this.choosedLevel = 1;
-        this.gameState = "START";
-        this.isSpaced = false;
-        initGame();
-    }
 
     public void loadLevel(int index) {
         switch (index) {
@@ -177,8 +169,8 @@ public class GameManager implements KeyListener, ActionListener{
         g2d.drawString("Lives: ", 600,25);
 
         for (int i = 0;i < maxLives;i++) {
-            int x = (600 + 65) + i * (heart.getWidth() - 6);
-            int y = 30 - heart.getHeight() + 14;
+            int x = (600 + 67) + i * (heart.getWidth() - 10);
+            int y = 30 - heart.getHeight() + 16;
             if (i < lives) {
                 g.drawImage(heart, x, y, 20, 20, null);
             }
@@ -341,20 +333,36 @@ public class GameManager implements KeyListener, ActionListener{
         }
     }
 
+    public void resume() {
+        gameState = "START";
+        
+    }
+
+    public void resetGame() {
+        this.score = 0;
+        this.lives = 3;
+        this.choosedLevel = 1;
+        this.gameState = "START";
+        this.isSpaced = false;
+        initGame();
+    }
+
 
     public void gameOver(){
         gameState = "GAME OVER";
         
     }
 
+
+
     public void WinGame(){
+        gameState = "COMPLETE LEVEL";
         if (choosedLevel < totalLevel) {
             choosedLevel++;
             loadLevel(choosedLevel);
             ball.resetBall(paddle);
             paddle.resetPaddle();
             isSpaced = false;
-            gameState = "START";
         } else {
             gameState = "WIN";
         }
@@ -366,6 +374,10 @@ public class GameManager implements KeyListener, ActionListener{
 
     public String getGameState() {
         return gameState;
+    }
+
+    public void setGameState(String gameState) {
+        this.gameState = gameState;
     }
 
     public void setLevel(int level) {
