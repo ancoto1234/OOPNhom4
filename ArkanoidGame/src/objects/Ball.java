@@ -49,7 +49,7 @@ public class Ball extends MoveableObject{
 
         relativeIntersect = Math.max(-1, Math.min(1, relativeIntersect));
 
-        double bounceAngle = relativeIntersect * Math.toRadians(60);
+        double bounceAngle = relativeIntersect * Math.toRadians(70);
 
         dx = Math.sin(bounceAngle);
         dy = -dy;
