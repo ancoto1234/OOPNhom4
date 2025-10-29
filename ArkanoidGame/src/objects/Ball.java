@@ -28,14 +28,13 @@ public class Ball extends MoveableObject{
         if (x <= 0) {
             x = 1;
             dx = Math.abs(dx);
-         //   angle = Math.PI - angle; // Đảo ngược góc khi va chạm với tường bên
-        } else if (y <= 0) {
-            y = 1;
-            dy = -dy;
-           // angle = -angle; // Đảo ngược góc khi va chạm với tường trên
         } else if (x + width >= Renderer.SCREEN_WIDTH) {
             x = Renderer.SCREEN_WIDTH - width - 1;
             dx = -Math.abs(dx);
+        }
+        if (y <= 0) {
+            y = 1;
+            dy = -dy;
         }
     }
 
@@ -136,6 +135,13 @@ public class Ball extends MoveableObject{
         }
     }
 
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
 
     @Override
     public void update() {
