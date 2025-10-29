@@ -18,14 +18,12 @@ public class FastBallPowerUp extends PowerUp {
         Ball ball = gameManager.getBall();
         if (ball == null) return;
 
-        ball.setDx(ball.getDx() * 10);
-        ball.setDy(ball.getDy() * 10);
+        ball.setSpeed(ball.getSpeed() * 2);
 
         Runnable revertAction = () -> {
             Ball b = gameManager.getBall();
             if (b != null){
-                b.setDx(b.getDx() / 10);
-                b.setDy(b.getDy() / 10);
+                ball.setSpeed(ball.getSpeed() / 2);
             }
         };
 

@@ -79,8 +79,8 @@ public class GameManager implements KeyListener, ActionListener{
             System.out.println(heart == null);
 
             // images.put("paddle_expand", ImageIO.read(new File("ArkanoidGame/assets/expanded_paddle.png")));
-            images.put("powerup_expand", ImageIO.read(new File("ArkanoidGame/assets/experience.png")));
-            /// images.put("powerup_fastball", ImageIO.read(new File("ArkanoidGame/assets/power_fastball.png")));
+            images.put("powerup_expand", ImageIO.read(new File("ArkanoidGame/assets/power_expand.png")));
+            images.put("powerup_fastball", ImageIO.read(new File("ArkanoidGame/assets/power_fastball.png")));
 
             //Font
             font = Font.createFont(Font.TRUETYPE_FONT, new java.io.File("ArkanoidGame/assets/font.ttf")).deriveFont(17f);
@@ -298,7 +298,7 @@ public class GameManager implements KeyListener, ActionListener{
             if (rand.nextBoolean()) {
                 powerUps.add(new ExpandPadllePowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_expand")));
             } else {
-                powerUps.add(new FastBallPowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_expand")));
+                powerUps.add(new FastBallPowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_fastball")));
             }
         }
     }
