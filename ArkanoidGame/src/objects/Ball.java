@@ -28,11 +28,11 @@ public class Ball extends MoveableObject{
         if (x <= 0) {
             x = 1;
             dx = Math.abs(dx);
-            angle = Math.PI - angle; // Đảo ngược góc khi va chạm với tường bên
+         //   angle = Math.PI - angle; // Đảo ngược góc khi va chạm với tường bên
         } else if (y <= 0) {
             y = 1;
             dy = -dy;
-            angle = -angle; // Đảo ngược góc khi va chạm với tường trên
+           // angle = -angle; // Đảo ngược góc khi va chạm với tường trên
         } else if (x + width >= Renderer.SCREEN_WIDTH) {
             x = Renderer.SCREEN_WIDTH - width - 1;
             dx = -Math.abs(dx);

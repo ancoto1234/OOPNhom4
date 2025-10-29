@@ -48,7 +48,7 @@ public class GameManager implements KeyListener, ActionListener{
 
     public GameManager(){
         this.score = 0;
-        this.lives = 1;
+        this.lives = 3;
         this.maxLives = 3;
         this.isSpaced = false;
         this.gameState = "START";
@@ -115,7 +115,7 @@ public class GameManager implements KeyListener, ActionListener{
             int ballX = paddleX + paddleWidth / 2 - ballWidth / 2;
             int ballY = paddleY - ballHeight - 5;
 
-            ball = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 4);
+            ball = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 3);
             ball.setImage(getImage("ball"));
 
             loadLevel(choosedLevel);
