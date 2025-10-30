@@ -1,14 +1,14 @@
 package objects;
 
-import java.awt.*;
+import core.GameManager;
 
 public class Brick extends GameObject {
     protected int hitPoints;
     protected String type;
+    public int scoreValue;
 
-    public Brick(int x, int y, int width, int height, int hitPoints) {
+    public Brick(int x, int y, int width, int height) {
         super(x, y, width, height);
-        this.hitPoints = hitPoints;
     }
 
     public int getHitPoints() {
@@ -21,6 +21,10 @@ public class Brick extends GameObject {
 
     public boolean isDestroyed() {
         return this.hitPoints == 0;
+    }
+
+    public void dropPowerUp(GameManager gameManager) {
+
     }
 
     @Override

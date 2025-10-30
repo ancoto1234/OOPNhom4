@@ -1,17 +1,18 @@
 package objects;
 
-import java.awt.*;
+public class NormalBrick extends Brick{
 
-public class NormalBrick{
+    public NormalBrick(int x, int y, int width, int height) {
+        super(x, y, width, height);
+        this.hitPoints = 1;
+        this.scoreValue = 5;
 
-//    public NormalBrick(int positionX, int positionY, int width, int height, Image image) {
-//        super(positionX, positionY, width, height, image, 1, "NormalBrick");
-//    }
-//
-//    @Override
-//    public void update() {
-//
-//
-//    }
+    }
+
+    @Override
+    public void update() {
+
+
+    }
 
 }
