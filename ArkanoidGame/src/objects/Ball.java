@@ -24,13 +24,31 @@ public class Ball extends MoveableObject{
         this.angle = 0;
     }
 
+    private void normalizeSpeed() {
+        double length = Math.sqrt(dx * dx + dy * dy);
+        if (length == 0) {
+            return;
+        }
+
+        dx = (int) Math.round((dx / length) * speed);
+        dy = (int) Math.round((dy / length) * speed);
+    }
+
     public void bounceOffWall() {
         if (x <= 0) {
             x = 1;
             dx = Math.abs(dx);
+            normalizeSpeed();
+            angle = Math.PI - angle; // Đảo ngược góc khi va chạm với tường bên
+        } else if (y <= 0) {
+            y = 1;
+            dy = -dy;
+            normalizeSpeed();
+            angle = -angle; // Đảo ngược góc khi va chạm với tường trên
         } else if (x + width >= Renderer.SCREEN_WIDTH) {
             x = Renderer.SCREEN_WIDTH - width - 1;
             dx = -Math.abs(dx);
+            normalizeSpeed();
         }
         if (y <= 0) {
             y = 1;
@@ -48,10 +66,11 @@ public class Ball extends MoveableObject{
 
         relativeIntersect = Math.max(-1, Math.min(1, relativeIntersect));
 
-        double bounceAngle = relativeIntersect * Math.toRadians(70);
+        double bounceAngle = relativeIntersect * Math.toRadians(100);
 
         dx = Math.sin(bounceAngle);
         dy = -dy;
+        normalizeSpeed();
 
 
         y = (paddle.getY() - height - 1);
@@ -71,8 +90,10 @@ public class Ball extends MoveableObject{
 
         if (minOverLap == overlapLeft || minOverLap == overlapRight) {
             dx = -dx;
+            normalizeSpeed();
         } else {
             dy = -dy;
+            normalizeSpeed();
         }
 
     }
@@ -85,6 +106,7 @@ public class Ball extends MoveableObject{
     public void move() {
         x += dx * speed;
         y += dy * speed;
+        normalizeSpeed();
 
         angle += 0.2; // Tăng góc để tạo hiệu ứng xoay
 
