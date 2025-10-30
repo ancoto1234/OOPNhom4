@@ -1,5 +1,6 @@
 package core;
 
+import effects.ParticleSystem;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -12,6 +13,7 @@ import objects.*;
 import powerups.ExpandPadllePowerUp;
 import powerups.FastBallPowerUp;
 import powerups.PowerUp;
+
 
 
 public class GameManager implements KeyListener, ActionListener{
@@ -33,6 +35,7 @@ public class GameManager implements KeyListener, ActionListener{
     private Random rand;
     private boolean isBallOnPaddle;
     private Font font;
+    private ParticleSystem particleSystem = new ParticleSystem();
 
     //Image
     private BufferedImage heart;
@@ -71,6 +74,8 @@ public class GameManager implements KeyListener, ActionListener{
             images.put("paddle", ImageIO.read(new File("ArkanoidGame/assets/paddle.png")));
             images.put("ball", ImageIO.read(new File("ArkanoidGame/assets/ball.png")));
             images.put("brick", ImageIO.read(new File("ArkanoidGame/assets/brick.png")));
+            images.put("powerup_brick",ImageIO.read(new File ("ArkanoidGame/assets/powerupbrick.png")));
+            images.put("bonus1_brick",ImageIO.read(new File ("ArkanoidGame/assets/bonusbrick1.png")));
 
             //Load Hearts
             heart = ImageIO.read(new File("ArkanoidGame/assets/heart.png"));
@@ -193,10 +198,12 @@ public class GameManager implements KeyListener, ActionListener{
             }
         }
         //notif WIN or LOSE
+        particleSystem.render((Graphics2D) g);
     }
 
     public void updateGame() {
         HandleInput();
+        
         if (gameState.equals("START")){
             if (isSpaced == false) {
                 ball.setX(paddle.getX() + paddle.getWidth() / 2 - ball.getWidth() / 2);
@@ -213,6 +220,8 @@ public class GameManager implements KeyListener, ActionListener{
             if (ball.getY() > Renderer.SCREEN_HEIGHT) {
                 lives -= 1;
                 powerUps.clear();
+                particleSystem.clearParticles();
+                
                 if (lives <= 0) {
                     gameOver();
                     return;
@@ -230,6 +239,7 @@ public class GameManager implements KeyListener, ActionListener{
         }
 
         updateActiveEffects();
+        particleSystem.update();
     }
 
     private class ActiveEffect {
@@ -292,14 +302,12 @@ public class GameManager implements KeyListener, ActionListener{
     }
 
     public void spawnPowerUp(int x, int y){
-        if (rand.nextFloat() < 0.3){
-            int powerUpSize = 23;
+        int powerUpSize = 23;
 
-            if (rand.nextBoolean()) {
-                powerUps.add(new ExpandPadllePowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_expand")));
-            } else {
-                powerUps.add(new FastBallPowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_fastball")));
-            }
+        if (rand.nextBoolean()) {
+            powerUps.add(new ExpandPadllePowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_expand")));
+        } else {
+            powerUps.add(new FastBallPowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_expand")));
         }
     }
 
@@ -322,11 +330,14 @@ public class GameManager implements KeyListener, ActionListener{
             Brick brick = it.next();
             if (ball.checkCollision(brick)) {
                 ball.bounceOffBrick(brick);
-                this.score += 10;
+                this.score += brick.scoreValue;
                 brick.takeHits();
                 if (brick.isDestroyed()) {
+                    if (brick instanceof PowerUpBrick) {
+                        brick.dropPowerUp(this);
+                    }
                     it.remove();
-                    spawnPowerUp(brick.getX(), brick.getY());
+                    particleSystem.spawnParticles(brick.getX(), brick.getY(), brick.getWidth(), brick.getHeight(), Color.GRAY);
                     break;
                 }
             }
@@ -344,6 +355,9 @@ public class GameManager implements KeyListener, ActionListener{
         this.choosedLevel = 1;
         this.gameState = "START";
         this.isSpaced = false;
+
+        this.leftPressed = false;
+        this.rightPressed = false;
         initGame();
     }
 
@@ -362,7 +376,12 @@ public class GameManager implements KeyListener, ActionListener{
             loadLevel(choosedLevel);
             ball.resetBall(paddle);
             paddle.resetPaddle();
+            powerUps.clear();
             isSpaced = false;
+            particleSystem.clearParticles();
+
+            this.leftPressed = false;
+            this.rightPressed = false;
         } else {
             gameState = "WIN";
         }
