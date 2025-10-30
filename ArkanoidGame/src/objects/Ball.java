@@ -16,12 +16,15 @@ public class Ball extends MoveableObject{
     private double angle; // Góc di chuyển của bóng
     private BufferedImage rotatedImage;
 
+    private static final double MIN_VERTICAL_RATIO = 0.3;
+
     public Ball(int x, int y, int width, int height, double dx, double dy, int speed) {
         super(x, y, width, height);
         this.dx = dx;
         this.dy = dy;
         this.speed = speed;
         this.angle = 0;
+        normalizeSpeed();
     }
 
     private void normalizeSpeed() {
@@ -35,25 +38,29 @@ public class Ball extends MoveableObject{
     }
 
     public void bounceOffWall() {
-        if (x <= 0) {
-            x = 1;
+        final int MARGIN = 2;
+        if (x < 0) {
+            x = MARGIN;
             dx = Math.abs(dx);
-            normalizeSpeed();
-            angle = Math.PI - angle; // Đảo ngược góc khi va chạm với tường bên
-        } else if (y <= 0) {
-            y = 1;
-            dy = -dy;
-            normalizeSpeed();
-            angle = -angle; // Đảo ngược góc khi va chạm với tường trên
         } else if (x + width >= Renderer.SCREEN_WIDTH) {
-            x = Renderer.SCREEN_WIDTH - width - 1;
+            x = Renderer.SCREEN_WIDTH - width - MARGIN;
             dx = -Math.abs(dx);
-            normalizeSpeed();
+          //  angle = Math.PI - angle;
         }
-        if (y <= 0) {
-            y = 1;
-            dy = -dy;
+        if (y < 0) {
+            y = MARGIN;
+            dy = Math.abs(dy);
+
         }
+
+        double minDy = MIN_VERTICAL_RATIO * speed;
+        if (Math.abs(dy) < minDy) {
+            dy = Math.copySign(minDy, dy == 0 ? -1 : dy); // giữ chiều hiện tại (nếu dy==0 thì đặt hướng lên)
+            // điều chỉnh dx sao cho tổng tốc bằng speed
+            double newDx = Math.sqrt(Math.max(0, speed * speed - dy * dy));
+            dx = Math.copySign(newDx, dx);
+        }
+        normalizeSpeed();
     }
 
     public void bounceOffPaddle(Paddle paddle) {
@@ -66,14 +73,14 @@ public class Ball extends MoveableObject{
 
         relativeIntersect = Math.max(-1, Math.min(1, relativeIntersect));
 
-        double bounceAngle = relativeIntersect * Math.toRadians(100);
+        double bounceAngle = relativeIntersect * Math.toRadians(60);
 
         dx = Math.sin(bounceAngle);
-        dy = -dy;
+        dy = -speed * Math.cos(bounceAngle);
         normalizeSpeed();
 
 
-        y = (paddle.getY() - height - 1);
+        y = (paddle.getY() - height - 2);
 
     }
 
@@ -104,9 +111,8 @@ public class Ball extends MoveableObject{
     @Override
 
     public void move() {
-        x += dx * speed;
-        y += dy * speed;
-        normalizeSpeed();
+        x += dx;
+        y += dy;
 
         angle += 0.2; // Tăng góc để tạo hiệu ứng xoay
 
@@ -125,6 +131,8 @@ public class Ball extends MoveableObject{
         this.dx = 2;
         this.dy = -3;
         this.angle = 0;
+
+        normalizeSpeed();
     }
 
     private void rotateImage() {

@@ -130,7 +130,7 @@ public class GameManager implements KeyListener, ActionListener{
             int ballX = paddleX + paddleWidth / 2 - ballWidth / 2;
             int ballY = paddleY - ballHeight - 5;
 
-            Ball mainBall = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 2);
+            Ball mainBall = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 4);
             mainBall.setImage(getImage("ball"));
 
             balls.add(mainBall);
@@ -270,7 +270,7 @@ public class GameManager implements KeyListener, ActionListener{
                     int ballX = paddleX + paddleWidth / 2 - ballWidth / 2;
                     int ballY = paddleY - ballHeight - 5;
 
-                    Ball newBall = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 2);
+                    Ball newBall = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 4);
                     newBall.setImage(getImage("ball"));
 
                     newBall.resetBall(paddle);
