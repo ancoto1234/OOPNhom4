@@ -16,7 +16,7 @@ public class Ball extends MoveableObject{
     private double angle; // Góc di chuyển của bóng
     private BufferedImage rotatedImage;
 
-    public Ball(int x, int y, int width, int height, int dx, int dy, int speed) {
+    public Ball(int x, int y, int width, int height, double dx, double dy, int speed) {
         super(x, y, width, height);
         this.dx = dx;
         this.dy = dy;
@@ -30,8 +30,8 @@ public class Ball extends MoveableObject{
             return;
         }
 
-        dx = (int) Math.round((dx / length) * speed);
-        dy = (int) Math.round((dy / length) * speed);
+        dx = (dx / length) * speed;
+        dy = (dy / length) * speed;
     }
 
     public void bounceOffWall() {
@@ -168,5 +168,15 @@ public class Ball extends MoveableObject{
     @Override
     public void update() {
 
+    }
+
+
+    public double getDx() {
+        return dx;
+    }
+
+
+    public double getDy() {
+        return dy;
     }
 }

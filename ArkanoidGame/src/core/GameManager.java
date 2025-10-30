@@ -12,12 +12,13 @@ import level.*;
 import objects.*;
 import powerups.ExpandPadllePowerUp;
 import powerups.FastBallPowerUp;
+import powerups.MultiBallPowerUp;
 import powerups.PowerUp;
 
 
 
 public class GameManager implements KeyListener, ActionListener{
-    private Ball ball;
+    private List<Ball> balls;
     private Paddle paddle;
     private List<Brick> bricks;
     private List<PowerUp> powerUps;
@@ -58,11 +59,14 @@ public class GameManager implements KeyListener, ActionListener{
         
         if (this.gameState.equals("START")){
             loadImages();
-            initGame();
+
 
             powerUps = new ArrayList<>();
             activeEffects = new ArrayList<>();
             rand = new Random();
+            balls = new ArrayList<>();
+
+            initGame();
         }
     }
 
@@ -77,6 +81,7 @@ public class GameManager implements KeyListener, ActionListener{
             images.put("powerup_brick",ImageIO.read(new File ("ArkanoidGame/assets/powerupbrick.png")));
             images.put("bonus1_brick",ImageIO.read(new File ("ArkanoidGame/assets/bonusbrick1.png")));
 
+
             //Load Hearts
             heart = ImageIO.read(new File("ArkanoidGame/assets/heart.png"));
             damage = ImageIO.read(new File("ArkanoidGame/assets/damage.png"));
@@ -86,6 +91,7 @@ public class GameManager implements KeyListener, ActionListener{
             // images.put("paddle_expand", ImageIO.read(new File("ArkanoidGame/assets/expanded_paddle.png")));
             images.put("powerup_expand", ImageIO.read(new File("ArkanoidGame/assets/power_expand.png")));
             images.put("powerup_fastball", ImageIO.read(new File("ArkanoidGame/assets/power_fastball.png")));
+            images.put("powerup_multiball", ImageIO.read(new File("ArkanoidGame/assets/power_multiball.png")));
 
             //Font
             font = Font.createFont(Font.TRUETYPE_FONT, new java.io.File("ArkanoidGame/assets/font.ttf")).deriveFont(17f);
@@ -115,17 +121,23 @@ public class GameManager implements KeyListener, ActionListener{
             this.originalPaddleWidth = paddleWidth;
             this.originalPaddleImage = paddle.getImage();
 
+            if (balls != null){
+                balls.clear();
+            }
+
             int ballWidth = 25;
             int ballHeight = 25;
             int ballX = paddleX + paddleWidth / 2 - ballWidth / 2;
             int ballY = paddleY - ballHeight - 5;
 
-            ball = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 3);
-            ball.setImage(getImage("ball"));
+            Ball mainBall = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 2);
+            mainBall.setImage(getImage("ball"));
+
+            balls.add(mainBall);
 
             loadLevel(choosedLevel);
         } catch (Exception e) {
-            System.out.println("Error initializing game objects " + e.getMessage());
+            System.out.println("138Error initializing game objects " + e.getMessage());
 
         }
     }
@@ -158,8 +170,14 @@ public class GameManager implements KeyListener, ActionListener{
             paddle.render(g, observer);
         }
 
-        if (ball != null) {
-            ball.render(g, observer);
+        if (balls != null) {
+            try {
+                for (Ball b : balls){
+                    b.render(g, observer);
+                }
+            } catch (ConcurrentModificationException e){
+
+            }
         }
 
         for (Brick brick : bricks) {
@@ -206,32 +224,63 @@ public class GameManager implements KeyListener, ActionListener{
         
         if (gameState.equals("START")){
             if (isSpaced == false) {
-                ball.setX(paddle.getX() + paddle.getWidth() / 2 - ball.getWidth() / 2);
-                ball.setY(paddle.getY() - ball.getHeight());
-                return;
+
+                if (balls != null){
+                   Ball mainBall = balls.get(0);
+                    mainBall.setX(paddle.getX() + paddle.getWidth() / 2 - mainBall.getWidth() / 2);
+                    mainBall.setY(paddle.getY() - mainBall.getHeight());
+                }
+
                 
             }
-            
-            ball.move();
-            ball.bounceOffWall();
+
+            if (isSpaced == true && balls != null){
+                Iterator<Ball> it = balls.iterator();
+                while (it.hasNext()){
+                    Ball b = it.next();
+
+                    b.move();
+                    b.bounceOffWall();
+
+                    if (b.getY() > Renderer.SCREEN_HEIGHT) {
+                        it.remove();
+                        break;
+                    }
+                }
+            }
+
             checkCollisions();
             updatePowerUps();
 
-            if (ball.getY() > Renderer.SCREEN_HEIGHT) {
+            if (balls.isEmpty() && isSpaced == true){
                 lives -= 1;
                 powerUps.clear();
                 particleSystem.clearParticles();
-                
+
                 if (lives <= 0) {
                     gameOver();
-                    return;
                 } else {
-                    ball.resetBall(paddle);
+                    int paddleWidth = Renderer.SCREEN_WIDTH / 6;
+                    int paddleHeight = Renderer.SCREEN_HEIGHT / 27;
+                    int paddleX = (Renderer.SCREEN_WIDTH - paddleWidth) / 2;
+                    int paddleY = Renderer.SCREEN_HEIGHT - paddleHeight - 40;
+
+                    int ballWidth = 25;
+                    int ballHeight = 25;
+                    int ballX = paddleX + paddleWidth / 2 - ballWidth / 2;
+                    int ballY = paddleY - ballHeight - 5;
+
+                    Ball newBall = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 2);
+                    newBall.setImage(getImage("ball"));
+
+                    newBall.resetBall(paddle);
+                    balls.add(newBall);
                     paddle.resetPaddle();
                     isSpaced = false;
                     return;
                 }
             }
+
 
             if (allBricksDestroyed()){
                 WinGame();
@@ -301,14 +350,66 @@ public class GameManager implements KeyListener, ActionListener{
         activeEffects.add(new ActiveEffect(type, duration, revertAction));
     }
 
-    public void spawnPowerUp(int x, int y){
-        int powerUpSize = 23;
+    public void spawnPowerUp(int x, int y) {
+        int powerUpSize = 30; // Kích thước của Power-Up (ví dụ)
+        float chance = rand.nextFloat(); // Lấy 1 số ngẫu nhiên từ 0.0 đến 1.0
 
-        if (rand.nextBoolean()) {
+        // 30%  ExpandPaddle
+        if (chance < 0.3) {
             powerUps.add(new ExpandPadllePowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_expand")));
-        } else {
-            powerUps.add(new FastBallPowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_expand")));
         }
+        // 30%  FastBall
+        else if (chance < 0.3) {
+            powerUps.add(new FastBallPowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_fastball")));
+        }
+        // 40% MultiBall
+        else if (chance < 1) {
+            // ĐÂY LÀ CODE SINH RA POWERUP BẠN MUỐN
+            powerUps.add(new MultiBallPowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_multiball")));
+        }
+    }
+
+    public void activateMultiBall(){
+        if (balls.isEmpty()) return;
+
+        Ball primaryBall = balls.get(0);
+
+        int x = primaryBall.getX();
+        int y = primaryBall.getY();
+        int w = primaryBall.getWidth();
+        int h = primaryBall.getHeight();
+        double currentDx = primaryBall.getDx();
+        double currentDy = primaryBall.getDy();
+
+        // Tính toán góc xoay (45 độ = PI / 4)
+        double rad45 = Math.PI / 4.0;
+        double cos45 = Math.cos(rad45);
+        double sin45 = Math.sin(rad45);
+
+        // --- TÍNH TOÁN BÓNG 2 (Xoay +45 độ) ---
+        // dx_new = dx*cos - dy*sin
+        // dy_new = dx*sin + dy*cos
+        double dx2 = currentDx * cos45 - currentDy * sin45;
+        double dy2 = currentDx * sin45 + currentDy * cos45;
+
+        // --- TÍNH TOÁN BÓNG 3 (Xoay -45 độ) ---
+        // (cos(-45) = cos45, sin(-45) = -sin45)
+        // dx_new = dx*cos - dy*(-sin) = dx*cos + dy*sin
+        // dy_new = dx*(-sin) + dy*cos
+        double dx3 = currentDx * cos45 + currentDy * sin45;
+        double dy3 = -currentDx * sin45 + currentDy * cos45;
+
+        // Làm tròn về int để truyền vào constructor
+        int speed = primaryBall.getSpeed();
+
+        Ball ball2 = new Ball(x, y, w, h, dx2, dy2, speed);
+        ball2.setImage(getImage("ball"));
+
+        Ball ball3 = new Ball(x, y, w, h, dx3, dy3, speed);
+        ball3.setImage(getImage("ball"));
+
+        balls.add(ball2);
+        balls.add(ball3);
     }
 
     public void HandleInput(){
@@ -321,26 +422,33 @@ public class GameManager implements KeyListener, ActionListener{
     }
 
     public void checkCollisions(){
-        if (ball.checkCollision(paddle)){
-            ball.bounceOffPaddle(paddle);
-        }
+        if (balls == null) return;
 
-        Iterator <Brick> it = bricks.iterator();
-        while (it.hasNext()){
-            Brick brick = it.next();
-            if (ball.checkCollision(brick)) {
-                ball.bounceOffBrick(brick);
-                this.score += brick.scoreValue;
-                brick.takeHits();
-                if (brick.isDestroyed()) {
-                    if (brick instanceof PowerUpBrick) {
-                        brick.dropPowerUp(this);
+        try {
+            for (Ball b : balls){
+                if (b.checkCollision(paddle)){
+                    b.bounceOffPaddle(paddle);
+                }
+                Iterator <Brick> it = bricks.iterator();
+                while (it.hasNext()){
+                    Brick brick = it.next();
+                    if (b.checkCollision(brick)) {
+                        b.bounceOffBrick(brick);
+                        this.score += brick.scoreValue;
+                        brick.takeHits();
+                        if (brick.isDestroyed()) {
+                            if (brick instanceof PowerUpBrick) {
+                                brick.dropPowerUp(this);
+                            }
+                            it.remove();
+                            particleSystem.spawnParticles(brick.getX(), brick.getY(), brick.getWidth(), brick.getHeight(), Color.GRAY);
+                            break;
+                        }
                     }
-                    it.remove();
-                    particleSystem.spawnParticles(brick.getX(), brick.getY(), brick.getWidth(), brick.getHeight(), Color.GRAY);
-                    break;
                 }
             }
+        }catch (ConcurrentModificationException e){
+
         }
     }
 
@@ -374,9 +482,27 @@ public class GameManager implements KeyListener, ActionListener{
         if (choosedLevel < totalLevel) {
             choosedLevel++;
             loadLevel(choosedLevel);
-            ball.resetBall(paddle);
+            balls.clear();
+
+            int paddleWidth = Renderer.SCREEN_WIDTH / 6;
+            int paddleHeight = Renderer.SCREEN_HEIGHT / 27;
+            int paddleX = (Renderer.SCREEN_WIDTH - paddleWidth) / 2;
+            int paddleY = Renderer.SCREEN_HEIGHT - paddleHeight - 40;
+
+            int ballWidth = 25;
+            int ballHeight = 25;
+            int ballX = paddleX + paddleWidth / 2 - ballWidth / 2;
+            int ballY = paddleY - ballHeight - 5;
+
+            Ball newBall = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 2);
+            newBall.setImage(getImage("ball"));
+
+            newBall.resetBall(paddle);
+            balls.add(newBall);
+
             paddle.resetPaddle();
             powerUps.clear();
+            activeEffects.clear();
             isSpaced = false;
             particleSystem.clearParticles();
 
@@ -424,8 +550,8 @@ public class GameManager implements KeyListener, ActionListener{
         return paddle;
     }
 
-    public Ball getBall() {
-        return ball;
+    public List<Ball> getBalls() {
+        return balls;
     }
 
     public BufferedImage getOriginalPaddleImage() {

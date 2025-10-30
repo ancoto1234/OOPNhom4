@@ -1,7 +1,7 @@
 package objects;
 
 public abstract class MoveableObject extends GameObject {
-    protected int dx, dy;
+    protected double dx, dy;
 
     public MoveableObject(int x, int y, int width, int height) {
         super(x, y, width, height);
@@ -14,19 +14,19 @@ public abstract class MoveableObject extends GameObject {
         this.y += dy;
     }
 
-    public int getDy() {
-        return dy;
+    public void setDx(double dx) {
+        this.dx = dx;
     }
 
-    public int getDx() {
-        return dx;
-    }
-
-    public void setDy(int dy) {
+    public void setDy(double dy) {
         this.dy = dy;
     }
 
-    public void setDx(int dx) {
-        this.dx = dx;
+    public double getDx() {
+        return dx;
+    }
+
+    public double getDy() {
+        return dy;
     }
 }
