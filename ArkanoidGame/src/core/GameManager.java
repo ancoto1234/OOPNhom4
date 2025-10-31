@@ -1,5 +1,6 @@
 package core;
 
+import effects.ExplosionEffects;
 import effects.ParticleSystem;
 import java.awt.*;
 import java.awt.event.*;
@@ -37,6 +38,7 @@ public class GameManager implements KeyListener, ActionListener{
     private boolean isBallOnPaddle;
     private Font font;
     private ParticleSystem particleSystem = new ParticleSystem();
+    private List<ExplosionEffects> explosions = new ArrayList<>();
 
     //Image
     private BufferedImage heart;
@@ -87,6 +89,7 @@ public class GameManager implements KeyListener, ActionListener{
             images.put("brick", ImageIO.read(new File("ArkanoidGame/assets/brick.png")));
             images.put("powerup_brick",ImageIO.read(new File ("ArkanoidGame/assets/powerupbrick.png")));
             images.put("bonus1_brick",ImageIO.read(new File ("ArkanoidGame/assets/bonusbrick1.png")));
+            images.put("explosion_brick",ImageIO.read(new File ("ArkanoidGame/assets/explosionbrick.png")));
 
 
             //Load Hearts
@@ -151,7 +154,7 @@ public class GameManager implements KeyListener, ActionListener{
             int ballX = paddleX + paddleWidth / 2 - ballWidth / 2;
             int ballY = paddleY - ballHeight - 5;
 
-            Ball mainBall = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 4);
+            Ball mainBall = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 3);
             mainBall.setImage(getImage("ball"));
 
             balls.add(mainBall);
@@ -238,6 +241,9 @@ public class GameManager implements KeyListener, ActionListener{
         }
         //notif WIN or LOSE
         particleSystem.render((Graphics2D) g);
+        for (ExplosionEffects e : explosions) {
+            e.render((Graphics2D) g);
+        }
     }
 
     public void updateGame() {
@@ -291,7 +297,7 @@ public class GameManager implements KeyListener, ActionListener{
                     int ballX = paddleX + paddleWidth / 2 - ballWidth / 2;
                     int ballY = paddleY - ballHeight - 5;
 
-                    Ball newBall = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 4);
+                    Ball newBall = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 3);
                     newBall.setImage(getImage("ball"));
 
                     newBall.resetBall(paddle);
@@ -310,6 +316,11 @@ public class GameManager implements KeyListener, ActionListener{
 
         updateActiveEffects();
         particleSystem.update();
+        for (ExplosionEffects e : explosions) {
+            e.update();
+        }
+
+        explosions.removeIf(e -> !e.isActive());
     }
 
     private class ActiveEffect {
@@ -464,6 +475,10 @@ public class GameManager implements KeyListener, ActionListener{
                             if (brick instanceof PowerUpBrick) {
                                 brick.dropPowerUp(this);
                             }
+
+                            if (brick instanceof ExplosiveBrick) {
+                                brick.onDestroy(this);
+                            }
                             it.remove();
                             particleSystem.spawnParticles(brick.getX(), brick.getY(), brick.getWidth(), brick.getHeight(), Color.GRAY);
                             break;
@@ -522,7 +537,7 @@ public class GameManager implements KeyListener, ActionListener{
             int ballX = paddleX + paddleWidth / 2 - ballWidth / 2;
             int ballY = paddleY - ballHeight - 5;
 
-            Ball newBall = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 2);
+            Ball newBall = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 3);
             newBall.setImage(getImage("ball"));
 
             newBall.resetBall(paddle);
@@ -588,6 +603,10 @@ public class GameManager implements KeyListener, ActionListener{
 
     public int getOriginalPaddleWidth() {
         return originalPaddleWidth;
+    }
+
+    public void addExplosion(ExplosionEffects e) {
+        explosions.add(e);
     }
 
 
