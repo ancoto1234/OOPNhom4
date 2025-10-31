@@ -27,6 +27,9 @@ public class Brick extends GameObject {
     public void dropPowerUp(GameManager gameManager) {
 
     }
+    public void onDestroy(GameManager gameManager) {
+        
+    }
 
     @Override
     public void update() {
