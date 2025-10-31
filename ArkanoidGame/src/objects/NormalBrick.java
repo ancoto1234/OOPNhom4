@@ -1,3 +1,4 @@
+
 package objects;
 
 public class NormalBrick extends Brick{

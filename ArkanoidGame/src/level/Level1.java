@@ -1,3 +1,4 @@
+
 package level;
 
 import core.GameManager;
@@ -21,13 +22,14 @@ public class Level1 extends Level {
         int rows = 5;
         int cols = 20;
 
-        int normalRate = 70;
+        int normalRate = 60;
         int powerUpRate = 20;
-        int bonusRate = 10;
+        int explosionRate = 10;
+        // int bonusRate = 10;
 
         for (int r = 1; r < rows; r++) {
             for (int c = 1; c < cols - 1; c++) {
-                
+
                 int x = startX + c * brickWidth;
                 int y = startY + r * brickHeight;
                 Brick brick;
@@ -42,19 +44,24 @@ public class Level1 extends Level {
                     brick = new PowerUpBrick(x, y, brickWidth, brickHeight);
                     brick.setImage(gm.getImage("powerup_brick"));
                     bricks.add(brick);
-                }   
+                }
+                else if (roll < normalRate + powerUpRate + explosionRate) {
+                    brick = new ExplosiveBrick(x, y, brickWidth, brickHeight);
+                    brick.setImage(gm.getImage("explosion_brick"));
+                    bricks.add(brick);
+                }
                 else {
                     brick = new BonusBrick1(x, y, brickWidth, brickHeight);
                     brick.setImage(gm.getImage("bonus1_brick"));
                     bricks.add(brick);
 
                 }
-                
-                
+
+
             }
 
         }
     }
 
-    
+
 }

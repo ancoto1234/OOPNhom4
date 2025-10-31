@@ -19,6 +19,7 @@ public class Renderer extends JPanel implements ActionListener, KeyListener {
     public Renderer(MenuManager menuManager) {
         this.menuManager = menuManager;
         gameManager = new GameManager();
+        gameManager.setMenuManager(menuManager);
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         setBackground(Color.CYAN);
         setFocusable(true);
@@ -43,7 +44,9 @@ public class Renderer extends JPanel implements ActionListener, KeyListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        gameManager.updateGame();
+        if (!gameManager.isPaused()) {
+            gameManager.updateGame();
+        }
 
         String gameState = gameManager.getGameState();
         if (gameState.equals("GAME OVER")) {
@@ -57,12 +60,12 @@ public class Renderer extends JPanel implements ActionListener, KeyListener {
             menuManager.levelComplete();
         }
 
-        else if (gameState.equals("START")) {
-            
-            menuManager.nextLevel();
-            startGameLoop();
-        }
- 
+//        else if (gameState.equals("START")) {
+//
+//            menuManager.nextLevel();
+//            startGameLoop();
+//        }
+
         repaint();
     }
 

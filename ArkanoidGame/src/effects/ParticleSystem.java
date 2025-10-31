@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.List;
 
 public class ParticleSystem {
-    private List<Particle> particles = new ArrayList<>();
+    private final List<Particle> particles = new ArrayList<>();
 
     public void spawnParticles(int x, int y, int width, int height, Color color) {
         for (int i = 0;i < 20;i++) {
@@ -14,7 +14,7 @@ public class ParticleSystem {
             double dx = (Math.random() - 0.5) * 4;
             double dy = (Math.random() - 0.5) * 4;
             double life = 10 + Math.random() * 20;
-            particles.add(new Particle(px, py, dx, dy, life, color));;
+            particles.add(new Particle(px, py, dx, dy, life, color));
         }
     }
 
@@ -37,5 +37,5 @@ public class ParticleSystem {
         for (Particle p : particles) {
             p.render(g2d);
         }
-    } 
+    }
 }

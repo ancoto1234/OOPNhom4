@@ -1,3 +1,4 @@
+
 package UI;
 
 import java.awt.*;
@@ -9,7 +10,7 @@ import javax.swing.JButton;
 ;
 
 public class Button extends JButton {
-    
+
     private boolean isHovered = false;
     private boolean isPressed = false;
     private Font font;
@@ -88,9 +89,9 @@ public class Button extends JButton {
         int textWidth = fm.stringWidth(getText());
         int textHeight = fm.getAscent();
         g.drawString(
-            getText(),
-            (getWidth() - textWidth) / 2,
-            (getHeight() + textHeight) / 2 - 4
+                getText(),
+                (getWidth() - textWidth) / 2,
+                (getHeight() + textHeight) / 2 - 4
         );
     }
 }

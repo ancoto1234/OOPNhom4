@@ -1,3 +1,5 @@
+
+
 package objects;
 
 import core.GameManager;
@@ -22,5 +24,5 @@ public class PowerUpBrick extends Brick {
     }
 
 
-    
+
 }
