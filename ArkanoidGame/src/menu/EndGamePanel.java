@@ -1,9 +1,9 @@
+
 package menu;
 
+import UI.Button;
 import core.MenuManager;
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 
 public class EndGamePanel extends JPanel {
@@ -26,34 +26,38 @@ public class EndGamePanel extends JPanel {
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(15, 15, 15, 15);
-        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
 
         // 1. Label Trạng thái (Thắng/Thua)
         statusLabel = new JLabel("GAME OVER");
-        statusLabel.setFont(arcadeFont.deriveFont(50f));
+        statusLabel.setFont(arcadeFont.deriveFont(70f));
         statusLabel.setForeground(Color.RED);
         gbc.gridy = 0;
         add(statusLabel, gbc);
 
         // 2. Label Điểm
-        scoreLabel = new JLabel("Score: 0");
+        scoreLabel = new JLabel("Your Score: 0", SwingConstants.CENTER);
         scoreLabel.setFont(arcadeFont.deriveFont(30f));
         scoreLabel.setForeground(Color.WHITE);
         gbc.gridy = 1;
         add(scoreLabel, gbc);
 
         // 3. Nút Play Again
-        JButton playAgainButton = createMenuButton("Play Again", e -> manager.restartGame());
+        Button playAgainButton = new Button("Play Again");
+        playAgainButton.addActionListener(e -> manager.restartGame());
         gbc.gridy = 2;
         add(playAgainButton, gbc);
 
         // 4. Nút Main Menu
-        JButton mainMenuButton = createMenuButton("Main Menu", e -> manager.showMenuAtEndGame());
+        Button mainMenuButton = new Button("Main Menu");
+        mainMenuButton.addActionListener( e -> manager.showMenuAtEndGame());
         gbc.gridy = 3;
         add(mainMenuButton, gbc);
 
         // 5. Nút Exit
-        JButton exitButton = createMenuButton("Exit", e -> System.exit(0));
+        Button exitButton = new Button("Exit");
+        exitButton.addActionListener(e -> System.exit(0));
         gbc.gridy = 4;
         add(exitButton, gbc);
     }
@@ -62,23 +66,6 @@ public class EndGamePanel extends JPanel {
         statusLabel.setText(status);
         scoreLabel.setText("Final Score: " + score);
 
-        if (status.equals("CONGRATULATIONS!")) {
-            statusLabel.setForeground(Color.GREEN);
-        } else {
-            statusLabel.setForeground(Color.RED);
-        }
     }
 
-    private JButton createMenuButton(String text, ActionListener action) {
-        JButton button = new JButton(text);
-        button.setFont(arcadeFont);
-        button.setForeground(Color.BLUE);
-        button.setFocusPainted(false);
-        button.setContentAreaFilled(false);
-        button.setOpaque(true);
-        button.setBorderPainted(false);
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        button.addActionListener(action);
-        return button;
-    }
 }

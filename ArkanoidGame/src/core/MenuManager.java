@@ -2,8 +2,8 @@ package core;
 
 import java.awt.*;
 import javax.swing.*;
-
 import menu.EndGamePanel;
+import menu.LevelCompletePanel;
 import menu.MenuPanel;
 
 
@@ -13,14 +13,14 @@ public class MenuManager extends JFrame {
     private MenuPanel menuPanel;
     private Renderer renderer;
     private EndGamePanel endGamePanel;
+    private LevelCompletePanel levelCompletePanel;
 
     public MenuManager() {
         setTitle("Arkanoid Game");
-        setSize(Renderer.SCREEN_WIDTH, Renderer.SCREEN_HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
         setResizable(false);
         setBackground(Color.CYAN);
+
 
         cardLayout = new CardLayout();
         setLayout(cardLayout);
@@ -29,12 +29,18 @@ public class MenuManager extends JFrame {
         menuPanel = new MenuPanel(this);
         renderer = new Renderer(this);
         endGamePanel = new EndGamePanel(this);
+        levelCompletePanel = new LevelCompletePanel(this);
+
 
         mainPanel.add(menuPanel, "Menu");
         mainPanel.add(renderer, "Game");
         mainPanel.add(endGamePanel, "EndGame");
+        mainPanel.add(levelCompletePanel, "CompleteLevel");
+
 
         add(mainPanel);
+        pack();
+        setLocationRelativeTo(null);
         showMenu();
         setVisible(true);
 
@@ -56,6 +62,18 @@ public class MenuManager extends JFrame {
         endGamePanel.updateResults(status, score);
         cardLayout.show(mainPanel, "EndGame");
         renderer.stopGameLoop();
+    }
+
+    public void levelComplete() {
+        renderer.stopGameLoop();
+        cardLayout.show(mainPanel, "CompleteLevel");
+    }
+
+    public void nextLevel() {
+        cardLayout.show(mainPanel, "Game");
+        renderer.requestFocusInWindow();
+        renderer.getGameManager().resume();
+        renderer.startGameLoop();
     }
 
     public void startGame(int level) {

@@ -5,9 +5,10 @@ import objects.Ball;
 import objects.Paddle;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 public class FastBallPowerUp extends PowerUp {
-    private static final long duration = 3000;
+    private static final long duration = 1000;
 
     public  FastBallPowerUp(int x, int y, int width, int height, BufferedImage image){
         super(x, y, width, height, image);
@@ -15,17 +16,19 @@ public class FastBallPowerUp extends PowerUp {
 
     @Override
     public void activate(GameManager gameManager) {
-        Ball ball = gameManager.getBall();
-        if (ball == null) return;
+        List<Ball> balls = gameManager.getBalls();
+        if (balls == null) return;
 
-        ball.setDx(ball.getDx() * 10);
-        ball.setDy(ball.getDy() * 10);
+        for (Ball ball : balls){
+            ball.setSpeed(ball.getSpeed() * 2);
+        }
 
         Runnable revertAction = () -> {
-            Ball b = gameManager.getBall();
+            List<Ball> b = gameManager.getBalls();
             if (b != null){
-                b.setDx(b.getDx() / 10);
-                b.setDy(b.getDy() / 10);
+                for (Ball ball : b){
+                    ball.setSpeed(ball.getSpeed() / 2);
+                }
             }
         };
 

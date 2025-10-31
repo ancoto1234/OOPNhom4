@@ -46,10 +46,21 @@ public class Renderer extends JPanel implements ActionListener, KeyListener {
         gameManager.updateGame();
 
         String gameState = gameManager.getGameState();
-        if (gameState.equals("GAME OVER") || gameState.equals("WIN")) {
+        if (gameState.equals("GAME OVER")) {
             stopGameLoop();
-            String status = gameState.equals("WIN") ? "YOU WIN!" : "GAME OVER";
+            String status = "GAME OVER";
             menuManager.showEndGame(status, gameManager.getScore());
+        }
+
+        else if (gameState.equals("COMPLETE LEVEL")) {
+            stopGameLoop();
+            menuManager.levelComplete();
+        }
+
+        else if (gameState.equals("START")) {
+
+            menuManager.nextLevel();
+            startGameLoop();
         }
 
         repaint();
