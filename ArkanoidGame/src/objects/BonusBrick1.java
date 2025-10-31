@@ -1,3 +1,4 @@
+
 package objects;
 
 public class BonusBrick1 extends Brick{

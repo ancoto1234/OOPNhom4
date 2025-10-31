@@ -1,3 +1,4 @@
+
 package objects;
 
 import java.awt.*;
@@ -72,4 +73,3 @@ public abstract class GameObject {
         this.width = width;
     }
 }
-

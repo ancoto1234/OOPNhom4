@@ -1,3 +1,4 @@
+
 package core;
 
 import effects.ExplosionEffects;
@@ -27,6 +28,9 @@ public class GameManager implements KeyListener, ActionListener{
     private int lives;
     private int maxLives;
     private int choosedLevel;
+    private int so_in_ra_ma_hinh;
+    private long thoiGianBatDauDem;
+    private final long Khoang_cach_2_lan_dem = 1000;
     private int totalLevel = 3;
     private String gameState;
     private Level currentLevel;
@@ -39,7 +43,8 @@ public class GameManager implements KeyListener, ActionListener{
     private Font font;
     private ParticleSystem particleSystem = new ParticleSystem();
     private List<ExplosionEffects> explosions = new ArrayList<>();
-
+    private boolean isPaused = false;
+    private MenuManager menuManager;
     //Image
     private BufferedImage heart;
     private BufferedImage damage;
@@ -244,9 +249,37 @@ public class GameManager implements KeyListener, ActionListener{
         for (ExplosionEffects e : explosions) {
             e.render((Graphics2D) g);
         }
+
+        if (so_in_ra_ma_hinh > 0) {
+            g2d = (Graphics2D) g;
+            g2d.setColor(Color.YELLOW);
+            g2d.setFont(new Font("Arial", Font.BOLD, 72));
+
+            String soDemNguoc = String.valueOf(so_in_ra_ma_hinh);
+            FontMetrics fm = g2d.getFontMetrics();
+            int x = (Renderer.SCREEN_WIDTH - fm.stringWidth(soDemNguoc)) / 2;
+            int y = (Renderer.SCREEN_HEIGHT - fm.getHeight()) / 2 + fm.getAscent();
+
+            g2d.drawString(soDemNguoc, x, y);
+        }
     }
 
     public void updateGame() {
+        if(so_in_ra_ma_hinh > 0) {
+            long currentTime = System.currentTimeMillis();
+            long thoigianDaQua = currentTime - thoiGianBatDauDem;
+
+            if (thoigianDaQua >= Khoang_cach_2_lan_dem) {
+                so_in_ra_ma_hinh--;
+                thoiGianBatDauDem = currentTime;
+
+                if (so_in_ra_ma_hinh == 0) {
+                    isSpaced = true;
+                }
+            }
+            return;
+        }
+        if (isPaused) return;
         HandleInput();
 
         if (gameState.equals("START")){
@@ -504,9 +537,12 @@ public class GameManager implements KeyListener, ActionListener{
         this.choosedLevel = 1;
         this.gameState = "START";
         this.isSpaced = false;
+        this.isPaused = false;
 
         this.leftPressed = false;
         this.rightPressed = false;
+
+        clearAllEffects();
         initGame();
     }
 
@@ -617,7 +653,30 @@ public class GameManager implements KeyListener, ActionListener{
             rightPressed = true;
         } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             isSpaced = true;
+        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            togglePause();
         }
+    }
+
+    public void togglePause() {
+        isPaused = !isPaused;
+        if (isPaused) {
+            if (menuManager != null) {
+                menuManager.showPauseMenu();
+            }
+        } else {
+            if (menuManager != null) {
+                menuManager.resumeGame();
+            }
+        }
+    }
+
+    public void startCountdown() {
+        so_in_ra_ma_hinh = 3;
+        thoiGianBatDauDem = System.currentTimeMillis();
+        isPaused = false;
+        gameState = "START";
+        isSpaced = true;
     }
 
     public void keyReleased(KeyEvent e) {
@@ -628,9 +687,25 @@ public class GameManager implements KeyListener, ActionListener{
         }
     }
 
+    public void clearAllEffects() {
+        if (powerUps != null) powerUps.clear();
+        if (activeEffects != null) activeEffects.clear();
+        if (explosions != null) explosions.clear();
+        if (particleSystem != null) particleSystem.clearParticles();
+        if (balls != null) balls.clear();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
+    }
+
+    public void setMenuManager(MenuManager menuManager) {
+        this.menuManager = menuManager;
+    }
+
+    public boolean isPaused() {
+        return isPaused;
     }
 
 }

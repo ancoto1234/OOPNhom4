@@ -1,3 +1,4 @@
+
 package effects;
 
 import java.awt.*;
@@ -54,12 +55,12 @@ public class ExplosionEffects {
         int a2 = (int) (120 * alpha);
         g2d.setColor(new Color(smokeColor.getRed(), smokeColor.getGreen(), smokeColor.getBlue(),a2));
         g2d.fillOval((int) (x - radius / 2), (int) (y - radius / 2), (int) (radius), (int) (radius));
-        
+
 
     }
 
     public boolean isActive() {
         return active;
     }
-    
+
 }

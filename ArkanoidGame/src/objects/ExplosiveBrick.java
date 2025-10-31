@@ -1,9 +1,10 @@
+
 package objects;
 
 import core.GameManager;
 import effects.ExplosionEffects;
 
-public class ExplosiveBrick extends Brick { 
+public class ExplosiveBrick extends Brick {
 
 
     public ExplosiveBrick(int x, int y, int width, int height) {
@@ -19,7 +20,7 @@ public class ExplosiveBrick extends Brick {
         gameManager.addExplosion(explosion);
 
 
-    } 
+    }
 
-    
+
 }

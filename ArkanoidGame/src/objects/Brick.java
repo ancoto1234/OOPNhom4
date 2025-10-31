@@ -1,4 +1,5 @@
 
+
 package objects;
 
 import core.GameManager;
@@ -28,7 +29,7 @@ public class Brick extends GameObject {
 
     }
     public void onDestroy(GameManager gameManager) {
-        
+
     }
 
     @Override

@@ -1,5 +1,3 @@
-
-
 package menu;
 
 import UI.Button;
@@ -7,66 +5,62 @@ import core.MenuManager;
 import java.awt.*;
 import javax.swing.*;
 
-public class EndGamePanel extends JPanel {
+public class WinGamePanel extends JPanel {
     private MenuManager manager;
     private Font arcadeFont;
-    private JLabel statusLabel;
     private JLabel scoreLabel;
 
-    public EndGamePanel(MenuManager manager) {
+    public WinGamePanel(MenuManager manager) {
         this.manager = manager;
         setLayout(new GridBagLayout());
         setBackground(Color.BLACK);
 
         try {
-            arcadeFont = Font.createFont(Font.TRUETYPE_FONT, new java.io.File("ArkanoidGame/assets/font.ttf")).deriveFont(30f);
+            arcadeFont = Font.createFont(Font.TRUETYPE_FONT, new java.io.File("ArkanoidGame/assets/font.tft")).deriveFont(30f);
+
         } catch (Exception e) {
             System.out.println("Error loading font: " + e.getMessage());
             arcadeFont = new Font("Arial", Font.BOLD, 28);
         }
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(15, 15, 15, 15);
+        gbc.insets = new Insets(15,15,15,15);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-
-        // 1. Label Trạng thái (Thắng/Thua)
-        statusLabel = new JLabel("GAME OVER");
-        statusLabel.setFont(arcadeFont.deriveFont(70f));
-        statusLabel.setForeground(Color.RED);
+        //Label trạng thái chiến thắng
+        JLabel winLabel = new JLabel("CONGRATULATIONS!", SwingConstants.CENTER);
+        winLabel.setFont(arcadeFont.deriveFont(60f));
+        winLabel.setForeground(Color.YELLOW);
         gbc.gridy = 0;
-        add(statusLabel, gbc);
+        add(winLabel, gbc);
 
-        // 2. Label Điểm
-        scoreLabel = new JLabel("Your Score: 0", SwingConstants.CENTER);
+        //Label Phụ
+        JLabel subLabel = new JLabel("You have successfully completed the game!", SwingConstants.CENTER);
+        subLabel.setFont(arcadeFont.deriveFont(25f));
+        subLabel.setForeground(Color.WHITE);
+        gbc.gridy = 1;
+        add(subLabel, gbc);
+
+        scoreLabel = new JLabel("Final Score: 0", SwingConstants.CENTER);
         scoreLabel.setFont(arcadeFont.deriveFont(30f));
         scoreLabel.setForeground(Color.WHITE);
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         add(scoreLabel, gbc);
 
-        // 3. Nút Play Again
-        Button playAgainButton = new Button("Play Again");
-        playAgainButton.addActionListener(e -> manager.restartGame());
-        gbc.gridy = 2;
-        add(playAgainButton, gbc);
-
-        // 4. Nút Main Menu
         Button mainMenuButton = new Button("Main Menu");
+        // Gọi showMenuAtEndGame để reset game trước khi về menu
         mainMenuButton.addActionListener( e -> manager.showMenuAtEndGame());
         gbc.gridy = 3;
         add(mainMenuButton, gbc);
 
-        // 5. Nút Exit
         Button exitButton = new Button("Exit");
         exitButton.addActionListener(e -> System.exit(0));
         gbc.gridy = 4;
         add(exitButton, gbc);
+
     }
 
-    public void updateResults(String status, int score) {
-        statusLabel.setText(status);
+    public void updateScore(int score) {
         scoreLabel.setText("Final Score: " + score);
-
     }
-
 }
