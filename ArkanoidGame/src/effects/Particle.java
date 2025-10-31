@@ -4,11 +4,12 @@ import java.awt.*;
 
 public class Particle {
     private double x, y;
-    private double dx, dy;
+    private final double dx;
+    private double dy;
     private double life;
     private double alpha;
-    private Color color;
-    private int size;
+    private final Color color;
+    private final int size;
 
     public Particle(double x, double y, double dx, double dy, double life, Color color) {
         this.x = x;
