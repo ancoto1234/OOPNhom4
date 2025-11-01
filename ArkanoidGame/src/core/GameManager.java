@@ -633,6 +633,10 @@ public class GameManager implements KeyListener, ActionListener{
         return balls;
     }
 
+    public List<Brick> getBricks() {
+        return bricks;
+    }
+
     public BufferedImage getOriginalPaddleImage() {
         return originalPaddleImage;
     }
