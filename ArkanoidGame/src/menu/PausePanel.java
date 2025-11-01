@@ -7,18 +7,27 @@ import javax.swing.*;
 
 public class PausePanel extends JPanel {
     private MenuManager manager;
+    private Font font;
 
     public PausePanel(MenuManager manager) {
         this.manager = manager;
         setLayout(new GridBagLayout());
         setOpaque(false);
 
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT, new java.io.File("ArkanoidGame/assets/font.ttf")).deriveFont(30f);
+
+        } catch (Exception e) {
+            System.out.println("Error loading font: " + e.getMessage());
+            font = new Font("Arial", Font.BOLD, 28);
+        }
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(15, 15, 15, 15);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         JLabel title = new JLabel("GAME PAUSED");
-        title.setFont(new Font("Arial", Font.BOLD, 48));
+        title.setFont(font);
         title.setForeground(Color.YELLOW);
         gbc.gridy = 0;
         add(title, gbc);
