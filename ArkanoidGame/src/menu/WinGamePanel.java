@@ -35,17 +35,22 @@ public class WinGamePanel extends JPanel {
         add(winLabel, gbc);
 
         //Label Phụ
-        JLabel subLabel = new JLabel("You have successfully completed the game!", SwingConstants.CENTER);
-        subLabel.setFont(arcadeFont.deriveFont(25f));
-        subLabel.setForeground(Color.WHITE);
-        gbc.gridy = 1;
-        add(subLabel, gbc);
+//        JLabel subLabel = new JLabel("You have successfully completed the game!", SwingConstants.CENTER);
+//        subLabel.setFont(arcadeFont.deriveFont(25f));
+//        subLabel.setForeground(Color.WHITE);
+//        gbc.gridy = 1;
+//        add(subLabel, gbc);
 
         scoreLabel = new JLabel("Final Score: 0", SwingConstants.CENTER);
         scoreLabel.setFont(arcadeFont.deriveFont(30f));
         scoreLabel.setForeground(Color.WHITE);
-        gbc.gridy = 2;
+        gbc.gridy = 1;
         add(scoreLabel, gbc);
+
+        Button playAgainButton = new Button("Play Again");
+        playAgainButton.addActionListener(e -> manager.restartGame());
+        gbc.gridy = 2;
+        add(playAgainButton, gbc);
 
         Button mainMenuButton = new Button("Main Menu");
         // Gọi showMenuAtEndGame để reset game trước khi về menu

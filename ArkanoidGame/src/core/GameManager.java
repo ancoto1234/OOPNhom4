@@ -1,4 +1,3 @@
-
 package core;
 
 import effects.ExplosionEffects;
@@ -17,9 +16,8 @@ import powerups.FastBallPowerUp;
 import powerups.MultiBallPowerUp;
 import powerups.PowerUp;
 
-
-
 public class GameManager implements KeyListener, ActionListener{
+    private static GameManager instance;
     private List<Ball> balls;
     private Paddle paddle;
     private List<Brick> bricks;
@@ -64,7 +62,7 @@ public class GameManager implements KeyListener, ActionListener{
     // Quản lí ảnh
     private HashMap<String, BufferedImage> images;
 
-    public GameManager(){
+    private GameManager(){
         this.score = 0;
         this.lives = 3;
         this.maxLives = 3;
@@ -82,6 +80,17 @@ public class GameManager implements KeyListener, ActionListener{
 
             initGame();
         }
+    }
+
+    public static GameManager getInstance() {
+        if (instance == null) {
+            instance = new GameManager();
+        }
+        return instance;
+    }
+
+    public static void resetInstance() {
+        instance = null;
     }
 
     public void loadImages() {

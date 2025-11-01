@@ -1,5 +1,3 @@
-
-
 package level;
 
 import core.GameManager;
