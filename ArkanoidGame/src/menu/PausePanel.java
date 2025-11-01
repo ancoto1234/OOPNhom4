@@ -17,14 +17,12 @@ public class PausePanel extends JPanel {
         gbc.insets = new Insets(15, 15, 15, 15);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Title
         JLabel title = new JLabel("GAME PAUSED");
         title.setFont(new Font("Arial", Font.BOLD, 48));
         title.setForeground(Color.YELLOW);
         gbc.gridy = 0;
         add(title, gbc);
 
-        // Buttons với hiệu ứng từ class Button của bạn
         Button continueButton = new Button("Continue");
         Button restartButton = new Button("Restart Level");
         Button menuButton = new Button("Main Menu");
@@ -49,11 +47,10 @@ public class PausePanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        // 👈 VẼ OVERLAY MỜ LÊN TRÊN GAME BACKGROUND
-        g.setColor(new Color(0, 0, 0, 150)); // Đen với độ trong suốt 60%
+        g.setColor(new Color(0, 0, 0, 150));
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        // 👈 VẼ UI ELEMENTS (buttons, title)
+
         super.paintComponent(g);
     }
 }

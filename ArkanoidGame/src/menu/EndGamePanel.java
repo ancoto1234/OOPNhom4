@@ -31,14 +31,14 @@ public class EndGamePanel extends JPanel {
 
 
         // 1. Label Trạng thái (Thắng/Thua)
-        statusLabel = new JLabel("GAME OVER");
+        statusLabel = new JLabel("Game Over!");
         statusLabel.setFont(arcadeFont.deriveFont(70f));
         statusLabel.setForeground(Color.RED);
         gbc.gridy = 0;
         add(statusLabel, gbc);
 
         // 2. Label Điểm
-        scoreLabel = new JLabel("Your Score: 0", SwingConstants.CENTER);
+        scoreLabel = new JLabel("Your Score: ", SwingConstants.CENTER);
         scoreLabel.setFont(arcadeFont.deriveFont(30f));
         scoreLabel.setForeground(Color.WHITE);
         gbc.gridy = 1;

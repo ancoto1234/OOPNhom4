@@ -16,7 +16,7 @@ public class WinGamePanel extends JPanel {
         setBackground(Color.BLACK);
 
         try {
-            arcadeFont = Font.createFont(Font.TRUETYPE_FONT, new java.io.File("ArkanoidGame/assets/font.tft")).deriveFont(30f);
+            arcadeFont = Font.createFont(Font.TRUETYPE_FONT, new java.io.File("ArkanoidGame/assets/font.ttf")).deriveFont(30f);
 
         } catch (Exception e) {
             System.out.println("Error loading font: " + e.getMessage());

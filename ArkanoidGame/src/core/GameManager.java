@@ -404,7 +404,6 @@ public class GameManager implements KeyListener, ActionListener{
         }
     }
 
-
     public void addActiveEffect(String type, long duration, Runnable revertAction){
         for (ActiveEffect effect : activeEffects){
             if (effect.type.equals(type)){
@@ -589,6 +588,7 @@ public class GameManager implements KeyListener, ActionListener{
             this.rightPressed = false;
         } else {
             gameState = "WIN";
+            wingameSound.play();
         }
     }
 
