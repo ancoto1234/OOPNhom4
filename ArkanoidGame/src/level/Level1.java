@@ -7,7 +7,6 @@ import java.util.Random;
 import objects.*;
 
 public class Level1 extends Level {
-
     private static final Random random = new Random();
 
     public Level1(GameManager gm) {
@@ -21,18 +20,17 @@ public class Level1 extends Level {
         int brickWidth = 40;
         int brickHeight = 40;
         int rows = 5;
-        int cols = 20;
+        int cols = 14;
 
         int normalRate = 60;
         int powerUpRate = 20;
         int explosionRate = 10;
-        // int bonusRate = 10;
 
         for (int r = 1; r < rows; r++) {
             for (int c = 1; c < cols - 1; c++) {
 
-                int x = startX + c * brickWidth;
-                int y = startY + r * brickHeight;
+                int x = startX + c * 60;
+                int y = startY + r * 60;
                 Brick brick;
                 int roll = random.nextInt(100);
 

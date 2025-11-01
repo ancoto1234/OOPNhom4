@@ -13,12 +13,12 @@ public class Level3 extends Level {
 
     @Override
     protected void buildLevel() {
-        int startX = 100;
+        int startX = 200;
         int startY = 50;
-        int brickWidth = 30;
-        int brickHeight = 30;
-        int rows = 15;
-        int cols = 15;
+        int brickWidth = 35;
+        int brickHeight = 35;
+        int rows = 12;
+        int cols = 12;
 
         for (int r = 0; r < rows; r+=2) {
             for (int c = 0; c < cols; c+=2) {
