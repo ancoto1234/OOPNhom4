@@ -4,21 +4,21 @@ package effects;
 import java.awt.*;
 
 public class ExplosionEffects {
-    private int x,y;
+    private final int x,y;
     private double radius;
-    private double maxRadius;
-    private long startTime;
-    private long duration;
+    private final double maxRadius;
+    private final long startTime;
+    private final long duration;
     private boolean active = true;
-    private Color coreColor;
-    private Color smokeColor;
+    private final Color coreColor;
+    private final Color smokeColor;
 
 
     public ExplosionEffects(int x, int y) {
         this.x = x;
         this.y = y;
         this.radius = 0;
-        this.maxRadius = 120;
+        this.maxRadius = 160;
         this.duration = 500;
         this.startTime = System.currentTimeMillis();
         this.radius = 0;
