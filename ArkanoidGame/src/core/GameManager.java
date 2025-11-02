@@ -112,7 +112,7 @@ public class GameManager implements KeyListener, ActionListener{
 
             System.out.println(heart == null);
 
-            // images.put("paddle_expand", ImageIO.read(new File("ArkanoidGame/assets/expanded_paddle.png")));
+            //images.put("paddle_expand", ImageIO.read(new File("ArkanoidGame/assets/expanded_paddle.png")));
             images.put("powerup_expand", ImageIO.read(new File("ArkanoidGame/assets/power_expand.png")));
             images.put("powerup_fastball", ImageIO.read(new File("ArkanoidGame/assets/power_fastball.png")));
             images.put("powerup_multiball", ImageIO.read(new File("ArkanoidGame/assets/power_multiball.png")));
@@ -667,17 +667,18 @@ public class GameManager implements KeyListener, ActionListener{
         } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             isSpaced = true;
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            togglePause();
+            GamePause();
         }
     }
 
-    public void togglePause() {
+    public void GamePause() {
         isPaused = !isPaused;
         if (isPaused) {
             if (menuManager != null) {
                 menuManager.showPauseMenu();
             }
         } else {
+            startCountdown();
             if (menuManager != null) {
                 menuManager.resumeGame();
             }
