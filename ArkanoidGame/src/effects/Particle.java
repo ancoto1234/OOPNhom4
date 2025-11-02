@@ -3,7 +3,7 @@ package effects;
 
 import java.awt.*;
 
-public class Particle {
+public class Particle implements Effect {
     private double x, y;
     private final double dx;
     private double dy;
@@ -23,10 +23,11 @@ public class Particle {
         this.size = (int) (Math.random() * 2) + 3;
     }
 
-    public boolean isAlive() {
+    public boolean isActive() {
         return life > 0;
     }
 
+    @Override
     public void update() {
         x += dx;
         y += dy;
@@ -36,6 +37,7 @@ public class Particle {
 
     }
 
+    @Override
     public void render(Graphics2D g2d) {
         if (life > 0) {
             int a = (int) (alpha * 255);

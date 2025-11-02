@@ -1,11 +1,12 @@
-
-
 package level;
 
 import core.GameManager;
 import objects.*;
 
+import java.util.Random;
+
 public class Level3 extends Level {
+    private static final Random random = new Random();
 
     public Level3(GameManager gm) {
         super(gm);
@@ -17,18 +18,43 @@ public class Level3 extends Level {
         int startY = 50;
         int brickWidth = 35;
         int brickHeight = 35;
-        int rows = 5;
-        int cols = 5;
+        int rows = 8;
+        int cols = 8;
 
-        for (int r = 0; r < rows; r+=2) {
-            for (int c = 0; c < cols; c+=2) {
-                if (r == 0 || r == rows - 2 || r == rows - 1 || c == 0 || c == cols - 2
-                        || c == cols - 1 || (r == c) || c == rows - r - 1 || c == rows - r - 2) {
-                    int x = startX + c * brickWidth;
-                    int y = startY + r * brickHeight;
-                    Brick brick = new NormalBrick(x, y, brickWidth, brickHeight);
-                    brick.setImage(gm.getImage("brick"));
-                    bricks.add(brick);
+        int normalRate = 60;
+        int powerUpRate = 20;
+        int explosionRate = 10;
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (r == 0 || r == rows - 1 || c == 0
+                        || c == cols - 1 || (r == c) || c == rows - r - 1) {
+                    int x = startX + c * 60;
+                    int y = startY + r * 50;
+                    Brick brick;
+                    int roll = random.nextInt(100);
+
+                    if (roll < normalRate) {
+                        brick = new NormalBrick(x, y, brickWidth, brickHeight);
+                        brick.setImage(gm.getImage("brick"));
+                        bricks.add(brick);
+                    }
+                    else if (roll < normalRate + powerUpRate) {
+                        brick = new PowerUpBrick(x, y, brickWidth, brickHeight);
+                        brick.setImage(gm.getImage("powerup_brick"));
+                        bricks.add(brick);
+                    }
+                    else if (roll < normalRate + powerUpRate + explosionRate) {
+                        brick = new ExplosiveBrick(x, y, brickWidth, brickHeight);
+                        brick.setImage(gm.getImage("explosion_brick"));
+                        bricks.add(brick);
+                    }
+                    else {
+                        brick = new BonusBrick1(x, y, brickWidth, brickHeight);
+                        brick.setImage(gm.getImage("bonus1_brick"));
+                        bricks.add(brick);
+
+                    }
                 }
             }
         }

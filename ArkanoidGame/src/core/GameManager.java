@@ -53,6 +53,8 @@ public class GameManager implements KeyListener, ActionListener{
     private sound.Sound powerupSound;
     private sound.Sound wingameSound;
     private sound.Sound gameoverSound;
+    private sound.Sound explosiveSound;
+    private sound.Sound powerupBrickSound;
 
     public HashMap<String, BufferedImage> getImages() {
         return images;
@@ -134,6 +136,8 @@ public class GameManager implements KeyListener, ActionListener{
             powerupSound = new sound.Sound("ArkanoidGame/sound/powerup.wav");
             wingameSound = new sound.Sound("ArkanoidGame/sound/wingame.wav");
             gameoverSound = new sound.Sound("ArkanoidGame/sound/gameover.wav");
+            explosiveSound = new sound.Sound("ArkanoidGame/sound/explosion.wav");
+            powerupBrickSound = new sound.Sound("ArkanoidGame/sound/PowerUpBrick.wav");
 
             hitbrickSound.setVolume(-10.0f);
             hitpaddleSound.setVolume(-15.0f);
@@ -168,7 +172,7 @@ public class GameManager implements KeyListener, ActionListener{
             int ballX = paddleX + paddleWidth / 2 - ballWidth / 2;
             int ballY = paddleY - ballHeight - 5;
 
-            Ball mainBall = new Ball(ballX, ballY, ballWidth, ballHeight, 2, -2, 3);
+            Ball mainBall = new Ball(ballX, ballY, ballWidth, ballHeight, 0, -2, 3);
             mainBall.setImage(getImage("ball"));
 
             balls.add(mainBall);
@@ -519,6 +523,7 @@ public class GameManager implements KeyListener, ActionListener{
 
                             if (brick instanceof ExplosiveBrick) {
                                 brick.onDestroy(this);
+                                explosiveSound.play();
                             }
                             it.remove();
                             particleSystem.spawnParticles(brick.getX(), brick.getY(), brick.getWidth(), brick.getHeight(), Color.GRAY);

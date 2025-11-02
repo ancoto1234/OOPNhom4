@@ -129,7 +129,7 @@ public class Ball extends MoveableObject{
 
         this.x = ballX;
         this.y = ballY;
-        this.dx = 2;
+        this.dx = 0;
         this.dy = -2;
         this.angle = 0;
 

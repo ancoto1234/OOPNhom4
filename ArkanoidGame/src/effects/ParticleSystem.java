@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class ParticleSystem {
+public class ParticleSystem implements Effect {
     private final List<Particle> particles = new ArrayList<>();
 
     public void spawnParticles(int x, int y, int width, int height, Color color) {
@@ -19,12 +19,13 @@ public class ParticleSystem {
         }
     }
 
+    @Override
     public void update() {
         Iterator<Particle> it = particles.iterator();
         while (it.hasNext()) {
             Particle p = it.next();
             p.update();
-            if (!p.isAlive()) {
+            if (!p.isActive()) {
                 it.remove();
             }
         }
@@ -34,9 +35,11 @@ public class ParticleSystem {
         particles.clear();
     }
 
+    @Override
     public void render(Graphics2D g2d) {
         for (Particle p : particles) {
             p.render(g2d);
         }
     }
+
 }

@@ -3,7 +3,7 @@ package effects;
 
 import java.awt.*;
 
-public class ExplosionEffects {
+public class ExplosionEffects implements Effect {
     private final int x,y;
     private double radius;
     private final double maxRadius;
@@ -26,6 +26,7 @@ public class ExplosionEffects {
         this.smokeColor = new Color(80, 80, 80);
     }
 
+    @Override
     public void update() {
         if (!active) return;
 
@@ -39,6 +40,7 @@ public class ExplosionEffects {
         radius = maxRadius * progress;
     }
 
+    @Override
     public void render(Graphics2D g2d) {
         if (!active) return;
 
@@ -55,8 +57,6 @@ public class ExplosionEffects {
         int a2 = (int) (120 * alpha);
         g2d.setColor(new Color(smokeColor.getRed(), smokeColor.getGreen(), smokeColor.getBlue(),a2));
         g2d.fillOval((int) (x - radius / 2), (int) (y - radius / 2), (int) (radius), (int) (radius));
-
-
     }
 
     public boolean isActive() {
