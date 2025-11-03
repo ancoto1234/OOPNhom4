@@ -367,6 +367,7 @@ public class GameManager implements KeyListener, ActionListener{
                 lives -= 1;
                 powerUps.clear();
                 particleSystem.clearParticles();
+                activeEffects.clear();
 
                 if (lives <= 0) {
                     gameOver();
