@@ -3,6 +3,7 @@ package objects;
 
 import core.GameManager;
 import effects.ExplosionEffects;
+import effects.ParticleSystem;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -10,12 +11,14 @@ import java.util.List;
 public class ExplosiveBrick extends Brick {
 
     private final int explosionRadius = 80;
+    ParticleSystem particleSystem = new ParticleSystem();
 
 
     public ExplosiveBrick(int x, int y, int width, int height) {
         super(x, y, width, height);
         this.hitPoints = 1;
         this.scoreValue = 0;
+        this.typeBrick = 4;
     }
 
     @Override
@@ -43,6 +46,7 @@ public class ExplosiveBrick extends Brick {
                 b.takeHits();
                 if (b.isDestroyed()) {
                     toRemove.add(b);
+                    
                 }
             
             }
