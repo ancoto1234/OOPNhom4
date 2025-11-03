@@ -1,4 +1,4 @@
-🧱 Arkanoid Game (Java)
+![bbe5eb61b43c3862612d](https://github.com/user-attachments/assets/23914b63-fd7c-4e8d-a711-1217e62d1c44)🧱 Arkanoid Game (Java)
 
 Một phiên bản mở rộng của trò chơi Arkanoid / Breakout, được viết bằng Java Swing, với nhiều loại gạch, hiệu ứng nổ, power-up, hệ thống lưu game, và quản lý màn chơi.
 Link Demo Game: https://drive.google.com/file/d/1asiq9hjAnrbcnkupkiAWYKsfKtzLHB4l/view?usp=sharing
@@ -59,6 +59,7 @@ Khi phá hết các gạch có thể phá, game sẽ tự chuyển qua level k�
 
 Gạch UnBreakBrick không ảnh hưởng đến điều kiện thắng.
 
+
 🎨 Giao diện & hiệu ứng
 
 Hình ảnh và âm thanh được load từ thư mục ArkanoidGame/assets/.
@@ -77,7 +78,7 @@ Exit
 
 🧩 Cấu trúc dự án
 
-![alt text](bbe5eb61b43c3862612d.jpg)
+![Uploading bbe5eb61b43c3862612d.jpg…]()
 
 🔧 Cách chạy game
 ✅ Yêu cầu:
