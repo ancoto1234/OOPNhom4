@@ -45,11 +45,17 @@ Lần mở sau, nếu có dữ liệu lưu, sẽ hiển thị nút Continue Game
 Khi chọn Continue, game sẽ tải lại y nguyên trạng thái trước đó (gạch, bóng, powerup, điểm...).
 
 🕹️ Điều khiển
+
 Hành động	                              Phím
+
 Di chuyển sang trái:	                   ←
+
 Di chuyển sang phải:	                   →
+
 Bắt đầu thả bóng:	                     SPACE
+
 Tạm dừng / Hiện menu pause:             ESC
+
 Tiếp tục:	              Chọn "Continue" trong Pause Menu
 
 🧱 Hệ thống Level
