@@ -475,11 +475,11 @@ public class GameManager implements KeyListener, ActionListener{
             powerUps.add(new ExpandPadllePowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_expand")));
         }
         // 30%  FastBall
-        else if (chance < 0.3) {
+        else if (chance < 0.6) {
             powerUps.add(new FastBallPowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_fastball")));
         }
         // 40% MultiBall
-        else if (chance < 1) {
+        else if (chance < 0.8) {
             // ĐÂY LÀ CODE SINH RA POWERUP BẠN MUỐN
             powerUps.add(new MultiBallPowerUp(x, y, powerUpSize, powerUpSize, getImage("powerup_multiball")));
         }
