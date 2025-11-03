@@ -8,6 +8,7 @@ public class Brick extends GameObject {
     protected int hitPoints;
     protected String type;
     public int scoreValue;
+    public int typeBrick;
 
     public Brick(int x, int y, int width, int height) {
         super(x, y, width, height);
@@ -15,6 +16,10 @@ public class Brick extends GameObject {
 
     public int getHitPoints() {
         return hitPoints;
+    }
+
+    public int getType() {
+        return typeBrick;
     }
 
     public void takeHits() {

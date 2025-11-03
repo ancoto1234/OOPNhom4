@@ -7,6 +7,7 @@ public class BonusBrick1 extends Brick{
         super(x, y, width, height);
         this.hitPoints = 1;
         this.scoreValue = 10;
+        this.typeBrick = 3;
     }
 
     @Override

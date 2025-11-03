@@ -1,15 +1,15 @@
 package powerups;
 
 import core.GameManager;
-import objects.Paddle;
-
 import java.awt.image.BufferedImage;
+import objects.Paddle;
 
 public class ExpandPadllePowerUp extends PowerUp {
     private static final long duration = 3000;
 
     public  ExpandPadllePowerUp(int x, int y, int width, int height, BufferedImage image){
         super(x, y, width, height, image);
+        this.typePowerUp = 3;
     }
 
     @Override

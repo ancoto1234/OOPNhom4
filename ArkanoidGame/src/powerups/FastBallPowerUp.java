@@ -2,17 +2,16 @@
 package powerups;
 
 import core.GameManager;
-import objects.Ball;
-import objects.Paddle;
-
 import java.awt.image.BufferedImage;
 import java.util.List;
+import objects.Ball;
 
 public class FastBallPowerUp extends PowerUp {
     private static final long duration = 1000;
 
     public  FastBallPowerUp(int x, int y, int width, int height, BufferedImage image){
         super(x, y, width, height, image);
+        this.typePowerUp = 2;
     }
 
     @Override

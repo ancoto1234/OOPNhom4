@@ -9,10 +9,12 @@ public class PowerUpBrick extends Brick {
 
     private boolean hasDroppedPowerUp = false;
 
+
     public PowerUpBrick(int x, int y, int width, int height) {
         super(x, y, width, height);
         this.hitPoints = 1;
         this.scoreValue = 5;
+        this.typeBrick = 2;
     }
 
     @Override
