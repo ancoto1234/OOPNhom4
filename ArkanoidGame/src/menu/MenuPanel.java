@@ -45,7 +45,10 @@ public class MenuPanel extends JPanel {
         gbc.gridy = 0;
 
         Button startButton = new Button("New Game");
-        startButton.addActionListener(e -> manager.startGame(1));
+        startButton.addActionListener(e -> {
+            SaveGameManager.deleteSave();
+            manager.startGame(1);
+        });
         add(startButton, gbc);
         gbc.gridy += 1;
 
@@ -61,6 +64,7 @@ public class MenuPanel extends JPanel {
             manager.getRenderer().setGameManager(gm);                
             manager.getRenderer().requestFocusInWindow();
 
+
         });
 
         add(continueButton, gbc);
@@ -72,6 +76,7 @@ public class MenuPanel extends JPanel {
         add(exitButton, gbc);
 
         updateContinueButtonVisibility();
+
 
     }
 

@@ -52,14 +52,20 @@ public class MenuManager extends JFrame {
 
     public void showMenu() {
         getGlassPane().setVisible(false);
+        updateMenuContinueButton();
         cardLayout.show(mainPanel, "Menu");
         renderer.stopGameLoop();
+
     }
 
     public void showMenuAtPauseGame() {
         getGlassPane().setVisible(false);
         renderer.stopGameLoop();
         renderer.getGameManager().saveCurrentGame();
+
+        mainPanel.remove(menuPanel);
+        menuPanel = new MenuPanel(this);
+        mainPanel.add(menuPanel, "Menu");
         //renderer.getGameManager().resetGame();
         cardLayout.show(mainPanel, "Menu");
     }
@@ -85,9 +91,10 @@ public class MenuManager extends JFrame {
 
     public void showMenuAtEndGame() {
         renderer.stopGameLoop();
-
+        SaveGameManager.deleteSave();
+        updateMenuContinueButton();
         cardLayout.show(mainPanel, "Menu");
-        SaveGameManager.saveGame(renderer.getGameManager().createSaveData());
+    
         renderer.requestFocusInWindow();
     }
 
@@ -103,6 +110,8 @@ public class MenuManager extends JFrame {
     }
 
     public void showWinGame(int score) {
+        SaveGameManager.deleteSave();
+        updateMenuContinueButton();
         winGamePanel.updateScore(score);
         cardLayout.show(mainPanel, "WinGame");
         renderer.stopGameLoop();
@@ -116,6 +125,7 @@ public class MenuManager extends JFrame {
     }
 
     public void startGame(int level) {
+        renderer.getGameManager().resetGame();
         cardLayout.show(mainPanel, "Game");
         renderer.requestFocusInWindow();
         renderer.getGameManager().setLevel(level);
@@ -133,7 +143,14 @@ public class MenuManager extends JFrame {
     }
 
     public void exitGame() {
+        updateMenuContinueButton();
         System.exit(0);
+    }
+
+    public void updateMenuContinueButton() {
+        if (menuPanel != null) {
+            menuPanel.updateContinueButtonVisibility();
+        }
     }
 
     public Renderer getRenderer() {

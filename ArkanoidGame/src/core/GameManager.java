@@ -571,6 +571,7 @@ public class GameManager implements KeyListener, ActionListener{
         gameoverSound.play();
         highScoreManager.checkAndUpdate(score);
         gameState = "GAME OVER";
+        SaveGameManager.deleteSave();
 
     }
 
@@ -610,6 +611,7 @@ public class GameManager implements KeyListener, ActionListener{
             this.rightPressed = false;
         } else {
             gameState = "WIN";
+            SaveGameManager.deleteSave();
             wingameSound.play();
         }
     }
