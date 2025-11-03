@@ -19,7 +19,10 @@ public class Level2 extends Level {
         int rows = 8;
         int cols = 8;
 
-        int normalRate = 60;
+        int normalRate = 50;
+        int bonus1Rate = 15;
+        int bonus2Rate = 10;
+        int bonus3Rate = 5;
         int powerUpRate = 20;
         int explosionRate = 10;
 
@@ -45,6 +48,18 @@ public class Level2 extends Level {
                     brick.setImage(gm.getImage("explosion_brick"));
                     bricks.add(brick);
                 }
+                else if (roll < normalRate + powerUpRate + explosionRate + bonus2Rate) {
+                    brick = new BonusBrick2(x, y, brickWidth, brickHeight);
+                    brick.setImage(gm.getImage("bonus2_brick"));
+                    bricks.add(brick);
+                }
+
+                else if (roll < normalRate + powerUpRate + explosionRate + bonus2Rate + bonus3Rate) {
+                    brick = new BonusBrick3(x, y, brickWidth, brickHeight);
+                    brick.setImage(gm.getImage("bonus3_brick"));
+                    bricks.add(brick);
+                }
+                
                 else {
                     brick = new BonusBrick1(x, y, brickWidth, brickHeight);
                     brick.setImage(gm.getImage("bonus1_brick"));

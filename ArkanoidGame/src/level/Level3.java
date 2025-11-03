@@ -1,9 +1,8 @@
 package level;
 
 import core.GameManager;
-import objects.*;
-
 import java.util.Random;
+import objects.*;
 
 public class Level3 extends Level {
     private static final Random random = new Random();
@@ -18,12 +17,20 @@ public class Level3 extends Level {
         int startY = 50;
         int brickWidth = 35;
         int brickHeight = 35;
-        int rows = 8;
+        int rows = 3;
         int cols = 8;
 
         int normalRate = 60;
         int powerUpRate = 20;
         int explosionRate = 10;
+
+        for (int c = 0;c < cols;c++) {
+            if (c != 3 || c != 4) {
+                Brick brick = new UnBreakBrick(startX + c * 60, startY + 3 * 60, brickWidth, brickHeight);
+                brick.setImage(gm.getImage("unbreak_brick"));
+                bricks.add(brick);
+            }
+        }
 
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
