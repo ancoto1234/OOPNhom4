@@ -3,7 +3,6 @@ package core;
 
 import java.awt.*;
 import javax.swing.*;
-
 import menu.*;
 
 
@@ -60,7 +59,8 @@ public class MenuManager extends JFrame {
     public void showMenuAtPauseGame() {
         getGlassPane().setVisible(false);
         renderer.stopGameLoop();
-        renderer.getGameManager().resetGame();
+        renderer.getGameManager().saveCurrentGame();
+        //renderer.getGameManager().resetGame();
         cardLayout.show(mainPanel, "Menu");
     }
 
@@ -76,14 +76,23 @@ public class MenuManager extends JFrame {
         renderer.startGameLoop();
     }
 
-    public void showMenuAtEndGame() {
-        renderer.stopGameLoop();
-        renderer.getGameManager().resetGame();
-        cardLayout.show(mainPanel, "Menu");
+    public void continueGame() {
+        cardLayout.show(mainPanel, "Game");
+        getGlassPane().setVisible(false);
+        renderer.requestFocusInWindow();
+        renderer.startGameLoop();
     }
 
-    public void showEndGame(String status, int score) {
-        endGamePanel.updateResults(status, score);
+    public void showMenuAtEndGame() {
+        renderer.stopGameLoop();
+
+        cardLayout.show(mainPanel, "Menu");
+        SaveGameManager.saveGame(renderer.getGameManager().createSaveData());
+        renderer.requestFocusInWindow();
+    }
+
+    public void showEndGame(String status, int score, int highScore) {
+        endGamePanel.updateResults(status, score, highScore);
         cardLayout.show(mainPanel, "EndGame");
         renderer.stopGameLoop();
     }
@@ -133,6 +142,10 @@ public class MenuManager extends JFrame {
 
     public CardLayout getCardLayout() {
         return cardLayout;
+    }
+
+    public JPanel getMainPanel() {
+        return mainPanel;
     }
 
     class PauseGlassPane extends JComponent {

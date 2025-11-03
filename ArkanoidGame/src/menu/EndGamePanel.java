@@ -12,6 +12,7 @@ public class EndGamePanel extends JPanel {
     private Font arcadeFont;
     private JLabel statusLabel;
     private JLabel scoreLabel;
+    private JLabel highScoreLabel;
 
     public EndGamePanel(MenuManager manager) {
         this.manager = manager;
@@ -43,29 +44,36 @@ public class EndGamePanel extends JPanel {
         scoreLabel.setForeground(Color.WHITE);
         gbc.gridy = 1;
         add(scoreLabel, gbc);
+        // Label High Score
+        highScoreLabel = new JLabel("High Score: ", SwingConstants.CENTER);
+        highScoreLabel.setFont(arcadeFont.deriveFont(30f));
+        highScoreLabel.setForeground(Color.WHITE);
+        gbc.gridy = 2;
+        add(highScoreLabel, gbc);
 
         // 3. Nút Play Again
         Button playAgainButton = new Button("Play Again");
         playAgainButton.addActionListener(e -> manager.restartGame());
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         add(playAgainButton, gbc);
 
         // 4. Nút Main Menu
         Button mainMenuButton = new Button("Main Menu");
         mainMenuButton.addActionListener( e -> manager.showMenuAtEndGame());
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         add(mainMenuButton, gbc);
 
         // 5. Nút Exit
         Button exitButton = new Button("Exit");
         exitButton.addActionListener(e -> System.exit(0));
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         add(exitButton, gbc);
     }
 
-    public void updateResults(String status, int score) {
+    public void updateResults(String status, int score, int highScore) {
         statusLabel.setText(status);
-        scoreLabel.setText("Final Score: " + score);
+        scoreLabel.setText("Your Score: " + score);
+        highScoreLabel.setText("High Score: " + highScore);
 
     }
 

@@ -23,6 +23,7 @@ public class GameManager implements KeyListener, ActionListener{
     private List<Brick> bricks;
     private List<PowerUp> powerUps;
     private int score;
+    private HighScoreManager highScoreManager = new HighScoreManager();
     private int lives;
     private int maxLives;
     private int choosedLevel;
@@ -64,7 +65,7 @@ public class GameManager implements KeyListener, ActionListener{
     // Quản lí ảnh
     private HashMap<String, BufferedImage> images;
 
-    private GameManager(){
+    public GameManager(){
         this.score = 0;
         this.lives = 3;
         this.maxLives = 3;
@@ -105,7 +106,11 @@ public class GameManager implements KeyListener, ActionListener{
             images.put("brick", ImageIO.read(new File("ArkanoidGame/assets/brick.png")));
             images.put("powerup_brick",ImageIO.read(new File ("ArkanoidGame/assets/powerupbrick.png")));
             images.put("bonus1_brick",ImageIO.read(new File ("ArkanoidGame/assets/bonusbrick1.png")));
+            images.put("bonus2_brick",ImageIO.read(new File ("ArkanoidGame/assets/bonusbrick2.png")));
+            images.put("bonus3_brick",ImageIO.read(new File ("ArkanoidGame/assets/bonusbrick3.png")));
             images.put("explosion_brick",ImageIO.read(new File ("ArkanoidGame/assets/explosionbrick.png")));
+            images.put("unbreak_brick",ImageIO.read(new File ("ArkanoidGame/assets/unbreakbrick.png")));
+
 
 
             //Load Hearts
@@ -266,7 +271,7 @@ public class GameManager implements KeyListener, ActionListener{
         if (so_in_ra_ma_hinh > 0) {
             g2d = (Graphics2D) g;
             g2d.setColor(Color.YELLOW);
-            g2d.setFont(new Font("Arial", Font.BOLD, 72));
+            g2d.setFont(font.deriveFont(72f));
 
             String soDemNguoc = String.valueOf(so_in_ra_ma_hinh);
             FontMetrics fm = g2d.getFontMetrics();
@@ -539,6 +544,8 @@ public class GameManager implements KeyListener, ActionListener{
         }
     }
 
+
+
     public void resume() {
         gameState = "START";
 
@@ -562,6 +569,7 @@ public class GameManager implements KeyListener, ActionListener{
 
     public void gameOver(){
         gameoverSound.play();
+        highScoreManager.checkAndUpdate(score);
         gameState = "GAME OVER";
 
     }
@@ -606,8 +614,162 @@ public class GameManager implements KeyListener, ActionListener{
         }
     }
 
+    public SaveGame createSaveData() {
+        SaveGame data = new SaveGame();
+        data.score = this.score;
+        data.lives = this.lives;
+        data.currentLevel = this.choosedLevel;
+        data.isSpaced = this.isSpaced;
+
+        //Paddle
+        SaveGame.PaddleData pd = new SaveGame.PaddleData();
+        pd.x = paddle.getX();
+        pd.y = paddle.getY();
+        pd.width = paddle.getWidth();
+        pd.height = paddle.getHeight();
+        data.paddle = pd;
+
+        //Balls
+        data.balls = new ArrayList<>();
+        for (Ball b : balls) {
+            SaveGame.BallData bd = new SaveGame.BallData();
+            bd.x = b.getX();
+            bd.y = b.getY();
+            bd.width = b.getWidth();
+            bd.height = b.getHeight();
+            bd.dx = b.getDx();
+            bd.dy = b.getDy();
+            bd.speed = b.getSpeed();
+            data.balls.add(bd);
+
+        }
+
+        // Bricks 
+        data.bricks = new ArrayList<>();
+        for (Brick brick : bricks) {
+            SaveGame.BrickData bd = new SaveGame.BrickData();
+            bd.x = brick.getX();
+            bd.y = brick.getY();
+            bd.width = brick.getWidth();
+            bd.height = brick.getHeight();
+            bd.type = brick.getType();
+            data.bricks.add(bd);
+        }
+
+        // PowerUps
+        data.powerups = new ArrayList<>();
+        for (PowerUp pu : powerUps) {
+            SaveGame.PowerUpData pud = new SaveGame.PowerUpData();
+            pud.x = pu.getX();
+            pud.y = pu.getY();
+            pud.width = pu.getWidth();
+            pud.height = pu.getHeight();
+            pud.type = pu.getType();
+            data.powerups.add(pud);
+        }
+
+        return data;
+    }
+
+    public void saveCurrentGame() {
+        SaveGameManager.saveGame(createSaveData());
+    }
+
+    public void loadFromSave(SaveGame data) {
+        if (data == null) return;
+
+        this.score = data.score;
+        this.lives = data.lives;
+        this.choosedLevel = data.currentLevel;
+        this.gameState = "START";
+        this.isSpaced = data.isSpaced; // Tiếp tục di chuyển
+        this.isPaused = false;
+
+        // Paddle
+        paddle = new Paddle(data.paddle.x, data.paddle.y, data.paddle.width, data.paddle.height, 15);
+        paddle.setImage(getImage("paddle"));
+
+        //Balls
+        balls = new ArrayList<>();
+        for (SaveGame.BallData bd : data.balls) {
+            Ball b = new Ball(bd.x, bd.y, bd.width, bd.height, bd.dx, bd.dy, bd.speed);
+            b.setImage(getImage("ball"));
+            balls.add(b);
+        }
+
+        //Bricks
+        bricks = new ArrayList<>();
+        for  (SaveGame.BrickData bd : data.bricks) {
+            Brick brick;
+            switch (bd.type) {
+                case 1:
+                    brick = new NormalBrick(bd.x, bd.y, bd.width, bd.height);
+                    brick.setImage(getImage("brick"));;
+                    break;
+                case 2: 
+                    brick = new PowerUpBrick(bd.x, bd.y, bd.width, bd.height);
+                    brick.setImage(getImage("powerup_brick"));
+                    break;
+                case 3:
+                    brick = new BonusBrick1(bd.x, bd.y, bd.width, bd.height);
+                    brick.setImage(getImage("bonus1_brick"));
+                    break;
+                case 4:
+                    brick = new ExplosiveBrick(bd.x, bd.y, bd.width, bd.height);
+                    brick.setImage(getImage("explosion_brick"));
+                    break;
+                case 5: 
+                    brick = new BonusBrick2(bd.x, bd.y, bd.width, bd.height);
+                    brick.setImage(getImage("bonus2_brick"));
+                    break;
+                case 6: 
+                    brick = new BonusBrick3(bd.x, bd.y, bd.width, bd.height);
+                    brick.setImage(getImage("bonus3_brick"));
+                    break;
+                case 7:
+                     brick = new UnBreakBrick(bd.x, bd.y, bd.width, bd.height);
+                    brick.setImage(getImage("unbreak_brick"));
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+            bricks.add(brick);
+        }
+
+        // PowerUps
+        powerUps = new ArrayList<>();
+        for (SaveGame.PowerUpData pud : data.powerups) {
+            PowerUp pu;
+            switch (pud.type) {
+                case 3:
+                    pu = new ExpandPadllePowerUp(pud.x, pud.y, pud.width, pud.height, getImage("powerup_expand"));
+                    break;
+                case 2: 
+                    pu = new FastBallPowerUp(pud.x, pud.y, pud.width, pud.height, getImage("powerup_fastball"));
+                    break;
+                case 1:
+                    pu = new ExpandPadllePowerUp(pud.x, pud.y, pud.width, pud.height, getImage("powerup_expand"));
+                    break;
+                default:
+                    pu = null;
+            }
+            if (pu != null) {
+                powerUps.add(pu);
+            }
+
+        }
+    }
+
+
+
     public boolean allBricksDestroyed() {
-        return bricks.isEmpty();
+        for (Brick b : bricks) {
+            if (!(b instanceof UnBreakBrick) && !b.isDestroyed()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public String getGameState() {
@@ -626,6 +788,14 @@ public class GameManager implements KeyListener, ActionListener{
         loadLevel(level);
     }
 
+    public void setPaused(boolean paused) {
+        this.isPaused = paused;
+    }
+
+    public boolean isPause() {
+        return isPaused;
+    }
+
     public int getCurrentLevel() {
         return this.choosedLevel;
     }
@@ -633,6 +803,7 @@ public class GameManager implements KeyListener, ActionListener{
     public int getScore() {
         return this.score;
     }
+
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -659,6 +830,10 @@ public class GameManager implements KeyListener, ActionListener{
         return originalPaddleWidth;
     }
 
+    public HighScoreManager getHighScoreManager() {
+        return highScoreManager;
+    }
+
     public void addExplosion(ExplosionEffects e) {
         explosions.add(e);
     }
@@ -671,18 +846,21 @@ public class GameManager implements KeyListener, ActionListener{
             rightPressed = true;
         } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             isSpaced = true;
-        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            GamePause();
         }
     }
 
     public void GamePause() {
-        isPaused = !isPaused;
-        if (isPaused) {
+        if (!isPaused) {
+            isPaused = true;
             if (menuManager != null) {
                 menuManager.showPauseMenu();
+                System.out.println("Show Pause Panel");
+            }
+            else {
+                System.out.println("MenuManager = null");
             }
         } else {
+            isPaused = false;
             startCountdown();
             if (menuManager != null) {
                 menuManager.resumeGame();
@@ -693,7 +871,7 @@ public class GameManager implements KeyListener, ActionListener{
     public void startCountdown() {
         so_in_ra_ma_hinh = 3;
         thoiGianBatDauDem = System.currentTimeMillis();
-        isPaused = false;
+        this.isPaused = false;
         gameState = "START";
         isSpaced = true;
     }

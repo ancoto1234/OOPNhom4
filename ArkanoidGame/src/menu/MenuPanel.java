@@ -3,7 +3,11 @@
 package menu;
 
 import UI.Button;
+import core.GameManager;
 import core.MenuManager;
+import core.Renderer;
+import core.SaveGame;
+import core.SaveGameManager;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -15,6 +19,8 @@ public class MenuPanel extends JPanel {
     private MenuManager manager;
     private Font arcadeFont;
     private JPanel levelPanel;
+    private Renderer renderer;
+    private Button continueButton;
 
     public MenuPanel(MenuManager manager) {
         this.manager = manager;
@@ -38,21 +44,42 @@ public class MenuPanel extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridy = 0;
 
-        Button startButton = new Button("Start Game");
-        Button exitButton = new Button("Exit");
-
-        startButton.addActionListener(e -> startSelectedLevel(1));
-        exitButton.addActionListener(e -> System.exit(0));
-
+        Button startButton = new Button("New Game");
+        startButton.addActionListener(e -> manager.startGame(1));
         add(startButton, gbc);
         gbc.gridy += 1;
+
+        continueButton = new Button("Continue");
+        continueButton.addActionListener(e -> {
+            SaveGame saved = SaveGameManager.loadGame();
+            GameManager gm = new GameManager();
+            // gm.loadImages();
+            gm.loadFromSave(saved);
+            gm.setPaused(false);
+            gm.setMenuManager(manager);
+            manager.continueGame();
+            manager.getRenderer().setGameManager(gm);                
+            manager.getRenderer().requestFocusInWindow();
+
+        });
+
+        add(continueButton, gbc);
+        gbc.gridy += 1;
+
+
+        Button exitButton = new Button("Exit");
+        exitButton.addActionListener(e -> System.exit(0)); 
         add(exitButton, gbc);
+
+        updateContinueButtonVisibility();
 
     }
 
-
-    private void startSelectedLevel(int level) {
-        manager.startGame(level);
+    public void updateContinueButtonVisibility() {
+        boolean hasSave = new File("ArkanoidGame/data/savegame.dat").exists();
+        if (continueButton != null) {
+            continueButton.setVisible(hasSave);
+        }
     }
 
     @Override

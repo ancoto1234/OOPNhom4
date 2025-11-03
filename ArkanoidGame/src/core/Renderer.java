@@ -53,7 +53,7 @@ public class Renderer extends JPanel implements ActionListener, KeyListener {
         if (gameState.equals("GAME OVER")) {
             stopGameLoop();
             String status = "GAME OVER";
-            menuManager.showEndGame(status, gameManager.getScore());
+            menuManager.showEndGame(status, gameManager.getScore(), gameManager.getHighScoreManager().getHighScore());
         }
 
         else if (gameState.equals("COMPLETE LEVEL")) {
@@ -70,7 +70,12 @@ public class Renderer extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        gameManager.keyPressed(e);
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            gameManager.GamePause();
+        }
+        else {
+            gameManager.keyPressed(e);
+        }
     }
 
     @Override
@@ -93,6 +98,18 @@ public class Renderer extends JPanel implements ActionListener, KeyListener {
 
     public GameManager getGameManager() {
         return gameManager;
+    }
+
+    public void setGameManager(GameManager gm) {
+        if (this.gameManager != null) {
+            removeKeyListener(this.gameManager);
+        }
+
+        this.gameManager = gm;
+
+        if (this.gameManager != null) {
+            addKeyListener(this.gameManager);
+        }
     }
 
 }
