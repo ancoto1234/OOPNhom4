@@ -47,6 +47,9 @@ public class Ball extends MoveableObject{
         }
         if (y <= 0) {
             y = MARGIN;
+            if (Math.abs(dy) < 0.2) {
+                dy = Math.copySign(0.2, dy);
+            }
             dy = -dy;
 
         }
@@ -93,16 +96,18 @@ public class Ball extends MoveableObject{
         int overlapTop = ballBounds.y + ballBounds.height - brickBounds.y;
         int overlapBottom = brickBounds.y + brickBounds.height - ballBounds.y;
 
+
         int minOverLap = Math.min(Math.min(overlapLeft, overlapRight), Math.min(overlapBottom, overlapTop));
 
         if (minOverLap == overlapLeft || minOverLap == overlapRight) {
             dx = -dx;
             normalizeSpeed();
-        } else {
+        } 
+        
+        else {
             dy = -dy;
             normalizeSpeed();
         }
-
     }
 
     public boolean checkCollision(GameObject other) {
