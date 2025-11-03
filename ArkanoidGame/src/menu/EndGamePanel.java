@@ -5,11 +5,15 @@ package menu;
 import UI.Button;
 import core.MenuManager;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class EndGamePanel extends JPanel {
     private MenuManager manager;
     private Font arcadeFont;
+    private BufferedImage backgroundImage;
     private JLabel statusLabel;
     private JLabel scoreLabel;
     private JLabel highScoreLabel;
@@ -21,6 +25,7 @@ public class EndGamePanel extends JPanel {
 
         try {
             arcadeFont = Font.createFont(Font.TRUETYPE_FONT, new java.io.File("ArkanoidGame/assets/font.ttf")).deriveFont(30f);
+            backgroundImage = ImageIO.read(new File("ArkanoidGame/assets/background.png"));
         } catch (Exception e) {
             System.out.println("Error loading font: " + e.getMessage());
             arcadeFont = new Font("Arial", Font.BOLD, 28);
@@ -75,6 +80,14 @@ public class EndGamePanel extends JPanel {
         scoreLabel.setText("Your Score: " + score);
         highScoreLabel.setText("High Score: " + highScore);
 
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), null);
+        }
     }
 
 }

@@ -4,23 +4,23 @@ import core.GameManager;
 import java.util.Random;
 import objects.*;
 
-public class Level3 extends Level {
+public class Level4 extends Level {
     private static final Random random = new Random();
 
-    public Level3(GameManager gm) {
+    public Level4(GameManager gm) {
         super(gm);
     }
 
     @Override
     protected void buildLevel() {
-        int startX = 20;
-        int startY = 60;
+        int startX = 10;
+        int startY = 50;
         int brickWidth = 40;
         int brickHeight = 40;
-        int rows = 7;
+        int rows = 8;
         int cols = 13;
 
-        int normalRate = 45;
+        int normalRate = 40;
         int powerUpRate = 20;
         int explosionRate = 20;
         int bonus1Rate = 10;
@@ -29,11 +29,11 @@ public class Level3 extends Level {
         for (int r = 1; r < rows; r++) {
             for (int c = 1; c < cols - 1; c++) {
                 int x = startX + c * 55;
-                int y = startY + r * 55;
+                int y = startY + r * 50;
 
                 Brick brick;
-                // UnBreakBrick chắn giữa màn
-                if (r == 4 && c >= 4 && c <= 8) {
+                // 2 cột UnBreakBrick chắn biên
+                if (c == 2 || c == cols - 3) {
                     brick = new UnBreakBrick(x, y, brickWidth, brickHeight);
                     brick.setImage(gm.getImage("unbreak_brick"));
                     bricks.add(brick);

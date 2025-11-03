@@ -17,7 +17,7 @@ public class ExpandPadllePowerUp extends PowerUp {
         Paddle paddle = gameManager.getPaddle();
         if (paddle == null) return;
 
-        BufferedImage expandedImage = gameManager.getImage("paddle_expand");
+        BufferedImage expandedImage = gameManager.getImage("paddle");
         int newWidth = (int) (gameManager.getOriginalPaddleWidth() * 1.5);
 
         paddle.setImage(expandedImage);

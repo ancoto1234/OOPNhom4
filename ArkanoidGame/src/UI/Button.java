@@ -15,6 +15,7 @@ public class Button extends JButton {
     private boolean isPressed = false;
     private Font font;
     private BufferedImage normalImg, hoverImg, pressedImg;
+    private sound.Sound clickSound;
 
     public Button(String text) {
         super(text);
@@ -24,6 +25,8 @@ public class Button extends JButton {
             normalImg = ImageIO.read(new File("ArkanoidGame/assets/button.png"));
             hoverImg = ImageIO.read(new File("ArkanoidGame/assets/button_highlighted.png"));
             pressedImg = ImageIO.read(new File("ArkanoidGame/assets/button_disabled.png"));
+
+            clickSound = new sound.Sound("ArkanoidGame/sound/click.wav");
 
         } catch (Exception e) {
             font = new Font("Arial", Font.BOLD, 28);
@@ -47,6 +50,7 @@ public class Button extends JButton {
             @Override
             public void mousePressed(MouseEvent e) {
                 isPressed = true;
+                clickSound.play();
                 setForeground(Color.BLACK);
                 repaint();
             }

@@ -23,14 +23,14 @@ public class GameManager implements KeyListener, ActionListener{
     private List<Brick> bricks;
     private List<PowerUp> powerUps;
     private int score;
-    private HighScoreManager highScoreManager = new HighScoreManager();
+    private final HighScoreManager highScoreManager = new HighScoreManager();
     private int lives;
-    private int maxLives;
+    private final int maxLives;
     private int choosedLevel;
     private int so_in_ra_ma_hinh;
     private long thoiGianBatDauDem;
     private final long Khoang_cach_2_lan_dem = 1000;
-    private int totalLevel = 3;
+    private final int totalLevel = 10;
     private String gameState;
     private Level currentLevel;
     private boolean leftPressed, rightPressed = false;
@@ -38,15 +38,15 @@ public class GameManager implements KeyListener, ActionListener{
     private int originalPaddleWidth;
     private BufferedImage originalPaddleImage;
     private Random rand;
-    private boolean isBallOnPaddle;
     private Font font;
-    private ParticleSystem particleSystem = new ParticleSystem();
-    private List<ExplosionEffects> explosions = new ArrayList<>();
+    private final ParticleSystem particleSystem = new ParticleSystem();
+    private final List<ExplosionEffects> explosions = new ArrayList<>();
     private boolean isPaused = false;
     private MenuManager menuManager;
     //Image
     private BufferedImage heart;
     private BufferedImage damage;
+    private BufferedImage play_background;
 
     //Sound
     private sound.Sound hitbrickSound;
@@ -101,6 +101,7 @@ public class GameManager implements KeyListener, ActionListener{
 
 
         try {
+
             images.put("paddle", ImageIO.read(new File("ArkanoidGame/assets/paddle.png")));
             images.put("ball", ImageIO.read(new File("ArkanoidGame/assets/ball.png")));
             images.put("brick", ImageIO.read(new File("ArkanoidGame/assets/brick.png")));
@@ -124,6 +125,9 @@ public class GameManager implements KeyListener, ActionListener{
             images.put("powerup_fastball", ImageIO.read(new File("ArkanoidGame/assets/power_fastball.png")));
             images.put("powerup_multiball", ImageIO.read(new File("ArkanoidGame/assets/power_multiball.png")));
 
+            //Background
+            play_background = ImageIO.read(new File("ArkanoidGame/assets/play_background.png"));
+
             //Font
             font = Font.createFont(Font.TRUETYPE_FONT, new java.io.File("ArkanoidGame/assets/font.ttf")).deriveFont(17f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -144,8 +148,6 @@ public class GameManager implements KeyListener, ActionListener{
             explosiveSound = new sound.Sound("ArkanoidGame/sound/explosion.wav");
             powerupBrickSound = new sound.Sound("ArkanoidGame/sound/PowerUpBrick.wav");
 
-            hitbrickSound.setVolume(-10.0f);
-            hitpaddleSound.setVolume(-15.0f);
         } catch (Exception e) {
             System.out.println("Error loading sound: " + e.getMessage());
         }
@@ -201,6 +203,28 @@ public class GameManager implements KeyListener, ActionListener{
             case 3:
                 currentLevel = new Level3(this);
                 break;
+            case 4:
+                currentLevel = new Level4(this);
+                break;
+            case 5:
+                currentLevel = new Level5(this);
+                break;
+            case 6:
+                currentLevel = new Level6(this);
+                break;
+            case 7:
+                currentLevel = new Level7(this);
+                break;
+            case 8:
+                currentLevel = new Level8(this);
+                break;
+            case 9:
+                currentLevel = new Level9(this);
+                break;
+            case 10:
+                currentLevel = new Level10(this);
+                break;
+
             default:
                 System.out.println("Level not found!");
                 return;
@@ -213,9 +237,18 @@ public class GameManager implements KeyListener, ActionListener{
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, 800, 600);
 
+        if (play_background != null) {
+            g.drawImage(play_background, 0, 0, 800, 600, null);
+        } else {
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, Renderer.SCREEN_WIDTH, Renderer.SCREEN_HEIGHT);
+        }
+
         if (paddle != null) {
             paddle.render(g, observer);
         }
+
+
 
         if (balls != null) {
             try {
@@ -524,6 +557,7 @@ public class GameManager implements KeyListener, ActionListener{
                             hitbrickSound.play();
                             if (brick instanceof PowerUpBrick) {
                                 brick.dropPowerUp(this);
+                                powerupBrickSound.play();
                             }
 
                             if (brick instanceof ExplosiveBrick) {

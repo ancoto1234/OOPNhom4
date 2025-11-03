@@ -1,8 +1,8 @@
 package sound;
 
-import javax.sound.sampled.*;
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
+import javax.sound.sampled.*;
 
 public class Sound {
     private Clip clip;
@@ -41,7 +41,7 @@ public class Sound {
             clip.loop(Clip.LOOP_CONTINUOUSLY);
         }
     }
-
+    
     public void stop() {
         if (clip != null && clip.isRunning()) {
             clip.stop();

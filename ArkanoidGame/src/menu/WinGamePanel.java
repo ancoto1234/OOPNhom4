@@ -3,10 +3,14 @@ package menu;
 import UI.Button;
 import core.MenuManager;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class WinGamePanel extends JPanel {
     private MenuManager manager;
+    private BufferedImage backgroundImage;
     private Font arcadeFont;
     private JLabel scoreLabel;
 
@@ -16,7 +20,9 @@ public class WinGamePanel extends JPanel {
         setBackground(Color.BLACK);
 
         try {
+            
             arcadeFont = Font.createFont(Font.TRUETYPE_FONT, new java.io.File("ArkanoidGame/assets/font.ttf")).deriveFont(30f);
+            backgroundImage = ImageIO.read(new File("ArkanoidGame/assets/background.png"));
 
         } catch (Exception e) {
             System.out.println("Error loading font: " + e.getMessage());
@@ -53,7 +59,6 @@ public class WinGamePanel extends JPanel {
         add(playAgainButton, gbc);
 
         Button mainMenuButton = new Button("Main Menu");
-        // Gọi showMenuAtEndGame để reset game trước khi về menu
         mainMenuButton.addActionListener( e -> manager.showMenuAtEndGame());
         gbc.gridy = 3;
         add(mainMenuButton, gbc);
@@ -67,5 +72,13 @@ public class WinGamePanel extends JPanel {
 
     public void updateScore(int score) {
         scoreLabel.setText("Final Score: " + score);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), null);
+        }
     }
 }
