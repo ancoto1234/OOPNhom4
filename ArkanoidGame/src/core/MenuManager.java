@@ -109,10 +109,10 @@ public class MenuManager extends JFrame {
         cardLayout.show(mainPanel, "CompleteLevel");
     }
 
-    public void showWinGame(int score) {
+    public void showWinGame(int score, int highScore) {
         SaveGameManager.deleteSave();
         updateMenuContinueButton();
-        winGamePanel.updateScore(score);
+        winGamePanel.updateScore(score, highScore);
         cardLayout.show(mainPanel, "WinGame");
         renderer.stopGameLoop();
     }
